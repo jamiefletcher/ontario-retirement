@@ -34,17 +34,17 @@ def save_geojson(name: str, features: dict, output_filename: str):
         json.dump(geojson, f, indent=4, ensure_ascii=False)
 
 
-def scrape_json(url: str, user_agent: str = WINDOWS_CHROME) -> Any:
+def scrape(url: str, user_agent: str = WINDOWS_CHROME) -> Any:
     headers = {"User-Agent": user_agent}
     r = requests.get(url, headers)
     r.raise_for_status()
-    return json.loads(r.content)
+    return r.content
+
 
 def scrape_html(url: str, root_tag: List[str], user_agent: str = WINDOWS_CHROME) -> BeautifulSoup:
-    headers = {"User-Agent": user_agent}
-    r = requests.get(url, headers)
-    r.raise_for_status()
-    return BeautifulSoup(r.content, features="html.parser").find(*root_tag)
+    content = scrape(url, user_agent)
+    return BeautifulSoup(content, features="html.parser").find(*root_tag)
+
 
 # TODO: When the geocoder is confused, it returns multiple matches
 def geocode(address: str, api_key_env: str = "GEOAPIFY_API_KEY") -> Tuple[str, Dict]:
