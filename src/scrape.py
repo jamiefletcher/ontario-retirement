@@ -1,20 +1,21 @@
 import os
 import json
+import random
 from typing import Any, Dict, List
 
-from utils import scrape, save_json, load_json
+from utils import scrape, scrape_html, save_json, load_json
 
-RHRA_PUBLIC_REGISTER_FILE = "data/rhra_register.json"
-
+REGISTER_FILE = "data/rhra_register.json"
+REGISTER_EXTRA_FILE = "data/rhra_register_extra.json"
 
 class Registery:
     registry_url = (
         "https://www.rhra.ca/wp-admin/admin-ajax.php?action=public_register&language=en"
     )
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str = ""):
         self.residences: Dict[str, Residence] = {}
-        if os.path.exists(filename):
+        if filename and os.path.exists(filename):
             self.load_json(filename)
         else:
             self.load_url(Registery.registry_url)
@@ -46,6 +47,12 @@ class Registery:
                 ):
                     del self.residences[r_id]
 
+    def scrape_extra_data(self):
+        residences = list(self.residences.values())
+        random.shuffle(residences)
+        for r in residences[:3]:
+            r.scrape()
+
     def save_json(self, filename: str):
         if self.residences:
             residences = {r_id: r.json for r_id, r in self.residences.items()}
@@ -53,8 +60,18 @@ class Registery:
 
 
 class Residence:
+    base_url = "https://www.rhra.ca/en/register/homeid"
+
     def __init__(self, attributes: Dict[str, Any]):
         self.attributes = attributes
+        self.id = self.attributes.get("id")
+
+    def scrape(self):
+        parse_tree = scrape_html(f"{Residence.base_url}/{self.id}", ["body"])
+        print(self.id)
+        for node in parse_tree.find_all(*["div", "row my-4"]):
+            contents = [c for c in node.contents if not c.text.strip() == ""]
+            print(contents)
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -62,9 +79,10 @@ class Residence:
 
 
 def main():
-    registry = Registery(RHRA_PUBLIC_REGISTER_FILE)
-    registry.save_json(RHRA_PUBLIC_REGISTER_FILE)
+    registry = Registery(REGISTER_FILE)
+    registry.save_json(REGISTER_FILE)
     registry.keep_only(["Issued"])
+    registry.scrape_extra_data()
     print(len(registry.residences))
 
 
