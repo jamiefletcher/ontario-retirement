@@ -48,9 +48,10 @@ class Registery:
                     del self.residences[r_id]
 
     def scrape_extra_data(self):
-        residences = list(self.residences.values())
+        residences = list(self.residences.items())
         random.shuffle(residences)
-        for r in residences[:3]:
+        for r_id, r in residences:
+            print(r_id)
             r.scrape()
 
     def save_json(self, filename: str):
@@ -79,7 +80,6 @@ class Residence:
         self.id = self.attributes.get("id")
 
     def scrape(self):
-        print(self.id)
         parse_tree = scrape_html(f"{Residence.base_url}/{self.id}", ["body"])
         extra_attributes = {}
         for node in parse_tree.find_all(*["div", "row my-4"]):
@@ -89,8 +89,16 @@ class Residence:
                 key = ascii_only(clean_string(key))
                 if key in Residence.extra_keys:
                     extra_attributes[key] = clean_string(value)
-            # else:
-            #     print(contents)
+            else:
+                services = node.find(*["ul", "careservices_list"])
+                if services:
+                    services = [c for c in services.contents if not c.text.strip() == ""]
+                    services_list = {}
+                    for s in services:
+                        key, value = s.text.split("-")
+                        value = value.strip() == "\u2705"
+                        services_list[key] = value
+                    extra_attributes["services"] = services_list
         self.attributes.update(extra_attributes)
 
     @property
