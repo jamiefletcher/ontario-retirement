@@ -3,7 +3,7 @@ import json
 import random
 from typing import Any, Dict, List
 
-from utils import scrape, scrape_html, save_json, load_json
+from utils import scrape, scrape_html, ascii_only, clean_string, save_json, load_json
 
 REGISTER_FILE = "data/rhra_register.json"
 REGISTER_EXTRA_FILE = "data/rhra_register_extra.json"
@@ -61,17 +61,37 @@ class Registery:
 
 class Residence:
     base_url = "https://www.rhra.ca/en/register/homeid"
+    extra_keys = [
+        "first_issue_date",
+        "conditions_on_licence",
+        "other_licence_information",
+        "licensee_contact",
+        "operations_manager",
+        "phone_number",
+        "web_address",
+        "email_address",
+        "number_of_suites",
+        "resident_capacity",
+    ]
 
     def __init__(self, attributes: Dict[str, Any]):
         self.attributes = attributes
         self.id = self.attributes.get("id")
 
     def scrape(self):
-        parse_tree = scrape_html(f"{Residence.base_url}/{self.id}", ["body"])
         print(self.id)
+        parse_tree = scrape_html(f"{Residence.base_url}/{self.id}", ["body"])
+        extra_attributes = {}
         for node in parse_tree.find_all(*["div", "row my-4"]):
             contents = [c for c in node.contents if not c.text.strip() == ""]
-            print(contents)
+            if len(contents) == 2:
+                key, value = contents
+                key = ascii_only(clean_string(key))
+                if key in Residence.extra_keys:
+                    extra_attributes[key] = clean_string(value)
+            # else:
+            #     print(contents)
+        self.attributes.update(extra_attributes)
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -83,6 +103,7 @@ def main():
     registry.save_json(REGISTER_FILE)
     registry.keep_only(["Issued"])
     registry.scrape_extra_data()
+    registry.save_json("data/rhra_register_extra.json")
     print(len(registry.residences))
 
 

@@ -46,6 +46,18 @@ def scrape_html(url: str, root_tag: List[str], user_agent: str = WINDOWS_CHROME)
     return BeautifulSoup(content, features="html.parser").find(*root_tag)
 
 
+def clean_string(node: BeautifulSoup) -> str:
+    return " ".join(node.stripped_strings).strip()
+
+
+def ascii_only(s: str, alphabet = "abcdefghijklmnopqrstuvwxyz ") -> str:
+    s_out = ""
+    for c in s.lower():
+        if c in alphabet:
+            s_out += c
+    return s_out.strip().replace(" ", "_")
+
+
 # TODO: When the geocoder is confused, it returns multiple matches
 def geocode(address: str, api_key_env: str = "GEOAPIFY_API_KEY") -> Tuple[str, Dict]:
     api_key = os.getenv(api_key_env)
