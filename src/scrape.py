@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 from utils import ascii_only, clean_string, load_json, save_json, scrape, scrape_html
 
 REGISTER_FILE = "data/rhra_register.json"
-
+CORRECTIONS_FILE = "data/corrections.json"
 
 class Registery:
     registry_url = (
@@ -114,7 +114,8 @@ class Residence:
 
 def main():
     registry = Registery(REGISTER_FILE)
-    registry.scrape_details()
+    # registry.scrape_details()
+    registry.load_json(CORRECTIONS_FILE)
     # registry.filter_status(keep=["Issued"])
     registry.save_json(REGISTER_FILE)
     print(len(registry.residences))
