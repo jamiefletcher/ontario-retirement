@@ -1,12 +1,12 @@
-import os
 import json
+import os
 import random
 from typing import Any, Dict, List
 
-from utils import scrape, scrape_html, ascii_only, clean_string, save_json, load_json
+from utils import ascii_only, clean_string, load_json, save_json, scrape, scrape_html
 
 REGISTER_FILE = "data/rhra_register.json"
-REGISTER_EXTRA_FILE = "data/rhra_register_extra.json"
+
 
 class Registery:
     registry_url = (
@@ -21,9 +21,11 @@ class Registery:
             self.load_url(Registery.registry_url)
 
     def load_json(self, filename: str):
-        self.residences = {
-            r_id: Residence(r) for r_id, r in load_json(filename).items()
-        }
+        for r_id, r_attrib in load_json(filename).items():
+            if r_id not in self.residences:
+                self.residences[r_id] = Residence(r_attrib)
+            else:
+                self.residences[r_id].update(r_attrib)
 
     def load_url(self, url: str):
         response_json: Dict[str, Any] = json.loads(scrape(url))
@@ -38,21 +40,22 @@ class Registery:
             r = {key: value for key, value in entry.items() if value is not None}
             self.residences.update({r_id: Residence(r)})
 
-    def keep_only(self, status: List[str] = ["Issued"]):
-        if status:
+    def filter_status(self, keep: List[str] = ["Issued"]):
+        if keep:
             for r_id, r in self.residences.copy().items():
                 if (
-                    "lic_status" not in r.attributes
-                    or r.attributes["lic_status"] not in status
+                    "lic_status" in r.attributes
+                    and r.attributes["lic_status"] not in keep
                 ):
                     del self.residences[r_id]
 
-    def scrape_extra_data(self):
+    def scrape_details(self):
         residences = list(self.residences.items())
         random.shuffle(residences)
         for r_id, r in residences:
             print(r_id)
-            r.scrape()
+            if Residence.extra_keys[0] not in r.attributes:
+                r.scrape()
 
     def save_json(self, filename: str):
         if self.residences:
@@ -101,6 +104,9 @@ class Residence:
                     extra_attributes["services"] = services_list
         self.attributes.update(extra_attributes)
 
+    def update(self, attributes: Dict[str, Any]):
+        self.attributes.update(attributes)
+
     @property
     def json(self) -> Dict[str, Any]:
         return self.attributes
@@ -108,10 +114,9 @@ class Residence:
 
 def main():
     registry = Registery(REGISTER_FILE)
+    registry.scrape_details()
+    # registry.filter_status(keep=["Issued"])
     registry.save_json(REGISTER_FILE)
-    registry.keep_only(["Issued"])
-    registry.scrape_extra_data()
-    registry.save_json("data/rhra_register_extra.json")
     print(len(registry.residences))
 
 
