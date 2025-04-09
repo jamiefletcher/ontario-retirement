@@ -116,8 +116,8 @@ def main():
     registry = Registery(REGISTER_FILE)
     # registry.scrape_details()
     registry.load_json(CORRECTIONS_FILE)
-    # registry.filter_status(keep=["Issued"])
-    registry.save_json(REGISTER_FILE)
+    registry.filter_status(keep=["Issued", "Application Received", "Issued with conditions"])
+    registry.save_json("data/rhra_register_filtered.json")
     print(len(registry.residences))
 
 
