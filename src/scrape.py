@@ -3,7 +3,7 @@ import os
 import random
 from typing import Any, Dict, List
 
-from utils import ascii_only, clean_string, load_json, save_json, scrape, scrape_html
+from utils import ascii_only, clean_string, load_json, save_json, scrape, scrape_html, save_geojson
 
 REGISTER_FILE = "data/rhra_register.json"
 CORRECTIONS_FILE = "data/corrections.json"
@@ -61,6 +61,11 @@ class Registery:
         if self.residences:
             residences = {r_id: r.json for r_id, r in self.residences.items()}
             save_json(residences, filename, indent=4)
+    
+    def save_geojson(self, name:str, filename: str):
+        if self.residences:
+            features = [r.feature for r in self.residences.values()]
+            save_geojson(name, features, filename)
 
 
 class Residence:
@@ -108,6 +113,19 @@ class Residence:
         self.attributes.update(attributes)
 
     @property
+    def feature(self) -> Dict[str, Any]:
+        geometry = None
+        if "latlng" in self.attributes:
+            lat, lon = self.attributes.get("latlng").split(",")
+            lat, lon = float(lat), float(lon)
+            geometry = { "type": "Point", "coordinates": [lon, lat]}
+        return {
+            "type": "Feature",
+            "properties": self.attributes,
+            "geometry": geometry,
+        }
+
+    @property
     def json(self) -> Dict[str, Any]:
         return self.attributes
 
@@ -117,7 +135,7 @@ def main():
     # registry.scrape_details()
     registry.load_json(CORRECTIONS_FILE)
     registry.filter_status(keep=["Issued", "Application Received", "Issued with conditions"])
-    registry.save_json("data/rhra_register_filtered.json")
+    registry.save_geojson("Ontario Retirement Homes", "data/homes.geojson")
     print(len(registry.residences))
 
 

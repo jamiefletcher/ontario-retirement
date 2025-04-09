@@ -20,7 +20,7 @@ def save_json(obj: Any, filename: str, indent = None):
         json.dump(obj, f, indent=indent) 
 
 
-def save_geojson(name: str, features: dict, output_filename: str):
+def save_geojson(name: str, features: List[Dict[str, Any]], output_filename: str):
     geojson = {
         "type": "FeatureCollection",
         "name": name,
