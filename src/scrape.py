@@ -12,6 +12,7 @@ class Registery:
     registry_url = (
         "https://www.rhra.ca/wp-admin/admin-ajax.php?action=public_register&language=en"
     )
+    status_operating = ["Issued", "Application Received", "Issued with conditions"]
 
     def __init__(self, filename: str = ""):
         self.residences: Dict[str, Residence] = {}
@@ -40,7 +41,7 @@ class Registery:
             r = {key: value for key, value in entry.items() if value is not None}
             self.residences.update({r_id: Residence(r)})
 
-    def filter_status(self, keep: List[str] = ["Issued"]):
+    def filter_status(self, keep: List[str] = None):
         if keep:
             for r_id, r in self.residences.copy().items():
                 if (
@@ -54,8 +55,10 @@ class Registery:
         random.shuffle(residences)
         for r_id, r in residences:
             print(r_id)
-            if Residence.extra_keys[0] not in r.attributes:
+            r_status = r.attributes.get("lic_status")
+            if r_status in Registery.status_operating and "services" not in r.attributes:
                 r.scrape()
+            # r.fix_services()
 
     def save_json(self, filename: str):
         if self.residences:
@@ -70,6 +73,21 @@ class Registery:
 
 class Residence:
     base_url = "https://www.rhra.ca/en/register/homeid"
+    services_map = {
+        "Assistance with bathing ": "Bathing",
+        "Assistance with personal hygiene ": "Hygiene",
+        "Assistance with ambulation ": "Walking",
+        "Assistance with feeding ": "Feeding",
+        "Provision of skin and wound care ": "Wounds",
+        "Continence care ": "Continence",
+        "Administration of drugs or another substance ": "Drugs",
+        "Provision of a meal ": "Meals",
+        "Dementia care program ": "Dementia",
+        "Assistance with dressing ": "Dressing",
+        "Any service that a member of the Ontario College of Pharmacists provides while engaging in the practice of pharmacy ": "Pharmacist",
+        "Any service that a member of the College of Physicians and Surgeons of Ontario provides while engaging in the practice of medicine ": "Doctor",
+        "Any service that a member of the College of Nurses of Ontario provides while engaging in the practice of nursing ": "Nurse",
+    }
     extra_keys = [
         "first_issue_date",
         "conditions_on_licence",
@@ -104,10 +122,17 @@ class Residence:
                     services_list = {}
                     for s in services:
                         key, value = s.text.split("-")
+                        key = Residence.services_map[key] if key in Residence.services_map else key
                         value = value.strip() == "\u2705"
                         services_list[key] = value
                     extra_attributes["services"] = services_list
         self.attributes.update(extra_attributes)
+
+    def fix_services(self):
+        old_services = self.attributes.get("services")
+        if old_services:
+            new_services = {Residence.services_map[k]: v for k, v in old_services.items()}
+            self.attributes["services"] = new_services
 
     def update(self, attributes: Dict[str, Any]):
         self.attributes.update(attributes)
@@ -132,7 +157,7 @@ class Residence:
 
 def main():
     registry = Registery(REGISTER_FILE)
-    # registry.scrape_details()
+    registry.scrape_details()
     registry.load_json(CORRECTIONS_FILE)
     registry.filter_status(keep=["Issued", "Application Received", "Issued with conditions"])
     registry.save_geojson("Ontario Retirement Homes", "data/homes.geojson")
