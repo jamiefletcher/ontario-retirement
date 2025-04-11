@@ -7,15 +7,88 @@
     <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
     <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
     <style>
-        body { margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #filter-ui {
+            display: flex;
+            position: fixed;
+            top: 10px;
+            left: 0;
+            right: 0;
+            overflow-x: auto;
+            overflow-y: visible;
+            z-index: 1000;
+            max-width: 90vw;
+            height: auto;
+            margin: 0 auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            filter: drop-shadow(2px 2px 2px hsla(0, 0%, 0%, 0.2));
+            border-radius: 5px;
+        }
+
+        #filter-ui h2 {
+            margin: 0;
+            font-size: 16px;
+            white-space: nowrap;
+            position: sticky;
+            left: 0;
+            background: white;
+            padding-right: 10px;
+        }
+
+        #service-filters {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            margin-bottom: 10px;
+        }
+
+        .filter-group h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+
+        .filter-option {
+            margin: 5px 0;
+        }
+
+        .filter-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .filter-option input {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <div id='map'></div>
+    <div id='filter-ui'>
+        <h2>Filter by Services</h2>
+        <div id='service-filters'>
+            <!-- Filters will be added here dynamically -->
+        </div>
+    </div>
     <script>
         const pointsFile = 'data/homes.geojson'
-        const styleFile = 'style.json' 
+        const styleFile = 'style.json'
         const map = new maplibregl.Map({
             container: 'map',
             style: styleFile,
@@ -23,53 +96,151 @@
             zoom: 11
         });
 
+        // Store the original features for filtering
+        let allFeatures = [];
+
         // Wait for the map to load before adding GeoJSON
         map.on('load', () => {
-            map.addSource('points', {
-                type: 'geojson',
-                data: pointsFile,
-                cluster: false
-            });
+            fetch(pointsFile)
+                .then(response => response.json())
+                .then(data => {
+                    allFeatures = data.features;
 
-            map.addLayer({
-                id: 'points',
-                type: 'circle',
-                source: 'points',
-                paint: {
-                    'circle-radius': 8,
-                    'circle-color': '#ff0000',
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff'
+                    // Create filter checkboxes
+                    createServiceFilters();
+
+                    // Add source with all data initially
+                    map.addSource('points', {
+                        type: 'geojson',
+                        data: data,
+                        cluster: false
+                    });
+
+                    map.addLayer({
+                        id: 'points',
+                        type: 'circle',
+                        source: 'points',
+                        paint: {
+                            'circle-radius': 8,
+                            'circle-color': '#ff0000',
+                            'circle-stroke-width': 2,
+                            'circle-stroke-color': '#ffffff'
+                        }
+                    });
+
+                    // Add click interaction to show popup
+                    map.on('click', 'points', (e) => {
+                        const properties = e.features[0].properties
+                        const geometry = e.features[0].geometry
+                        const html = `
+                            <h3>${properties.name}</h3>
+                            <ul>
+                                <li>${properties.streetaddress}</li>
+                                <li>${properties.phone_number}</li>
+                                <li>${properties.web_address}</li>
+                                <li>${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</li>
+                            </ul>
+                        `;
+                        new maplibregl.Popup()
+                            .setLngLat(geometry.coordinates)
+                            .setHTML(html)
+                            .addTo(map);
+                    });
+
+                    // Change cursor to pointer when hovering over points
+                    map.on('mouseenter', 'points', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'points', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
+                });
+        });
+
+        function createServiceFilters() {
+            const container = document.getElementById('service-filters');
+            const services = [
+                    "Bathing",
+                    "Hygiene",
+                    "Walking",
+                    "Feeding",
+                    "Wounds",
+                    "Continence",
+                    "Drugs",
+                    "Meals",
+                    "Dementia",
+                    "Dressing",
+                    "Pharmacist",
+                    "Doctor",
+                    "Nurse"
+                ]
+
+            services.forEach(service => {
+                const option = document.createElement('div');
+                option.className = 'filter-option';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `filter-${service}`;
+                checkbox.value = service;
+                checkbox.checked = false; // Start with all filters unchecked
+                checkbox.addEventListener('change', updateFilteredData);
+
+                const label = document.createElement('label');
+                label.htmlFor = `filter-${service}`;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(service));
+
+                option.appendChild(label);
+                container.appendChild(option);
+            });
+        }
+
+        function updateFilteredData() {
+            const checkboxes = document.querySelectorAll('#service-filters input[type="checkbox"]');
+            const activeFilters = [];
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    activeFilters.push(checkbox.value);
                 }
             });
-        });
 
-        // Add click interaction to show popup
-        map.on('click', 'points', (e) => {
-            const properties = e.features[0].properties
-            const geometry = e.features[0].geometry
-            const html = `
-                <h3>${properties.name}</h3>
-                <ul>
-                    <li>${properties.streetaddress}</li>
-                    <li>${properties.phone_number}</li>
-                    <li>${properties.web_address}</li>
-                    <li>${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</li>
-                </ul>
-            `;
-            new maplibregl.Popup()
-                .setLngLat(geometry.coordinates)
-                .setHTML(html)
-                .addTo(map);
-        });
+            // If no filters are active, show all points
+            if (activeFilters.length === 0) {
+                const allGeoJSON = {
+                    type: 'FeatureCollection',
+                    features: allFeatures
+                };
+                map.getSource('points').setData(allGeoJSON);
+                return;
+            }
 
-        // Change cursor to pointer when hovering over points
-        map.on('mouseenter', 'points', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'points', () => {
-            map.getCanvas().style.cursor = '';
-        });
+            // Filter features based on active filters
+            const filteredFeatures = allFeatures.filter(feature => {
+                if (!feature.properties.services) return false;
+
+                // Check if the feature has ALL active filters set to TRUE
+                return activeFilters.every(service =>
+                    feature.properties.services[service] === true
+                );
+            });
+
+            // Update the map source with filtered data
+            const filteredGeoJSON = {
+                type: 'FeatureCollection',
+                features: filteredFeatures
+            };
+
+            map.getSource('points').setData(filteredGeoJSON);
+        }
+
+        function getServiceList(services) {
+            if (!services) return 'None listed';
+
+            const activeServices = Object.keys(services).filter(service => services[service]);
+            return activeServices.join(', ');
+        }
     </script>
 </body>
 </html>
