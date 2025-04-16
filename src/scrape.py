@@ -128,6 +128,7 @@ class Extractor:
         "number_of_suites",
         "resident_capacity",
     ]
+    _mandatory_inspection = ["Mandatory Report Inspection", "Mandatory Inspection"]
     _services_map = {
         "Assistance with bathing ": "Bathing",
         "Assistance with personal hygiene ": "Hygiene",
@@ -146,6 +147,7 @@ class Extractor:
     
     def __init__(self, section: str = ""):
         self.methods = {
+            "licence information": Extractor._summary,
             "care services": Extractor._services,
         }
         self.apply = self.methods.get(section, Extractor._default)
@@ -161,24 +163,42 @@ class Extractor:
                     extra_attributes[key] = clean_string(value)
         return extra_attributes
     
-    def _services(root: BeautifulSoup, target = ["ul", "careservices_list"]) -> Dict[str, Any]:
+    def _summary(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
         extra_attributes = {}
-        services = root.find(*["ul", "careservices_list"])
-        if services:
-            services = [c for c in services.contents if not c.text.strip() == ""]
-            services_list = {}
-            for s in services:
-                key, value = s.text.split("-")
-                key = Extractor._services_map[key] if key in Extractor._services_map else key
-                value = value.strip() == "\u2705"
-                services_list[key] = value
-            extra_attributes["services"] = services_list
+        for node in root.find_all(*target):
+            contents = [c for c in node.contents if not c.text.strip() == ""]
+            if len(contents) == 2:
+                key, value = contents
+                key = ascii_only(clean_string(key))
+                # if key in Extractor._extra_keys:
+                extra_attributes[key] = clean_string(value)
+            elif len(contents) == 1:
+                para: BeautifulSoup = contents[0].find("p")
+                mandatory_inspection = False
+                if para:
+                    for t in Extractor._mandatory_inspection:
+                        if t in para.text:
+                            mandatory_inspection = True
+                            break
+                extra_attributes["mandatory_inspection"] = mandatory_inspection
         return extra_attributes
+    
+    def _services(root: BeautifulSoup, target = ["ul", "careservices_list"]) -> Dict[str, Any]:
+        services = root.find(*["ul", "careservices_list"])
+        services = [c for c in services.contents if not c.text.strip() == ""]
+        services_list = {}
+        for s in services:
+            key, value = s.text.split("-")
+            key = Extractor._services_map[key] if key in Extractor._services_map else key
+            value = value.strip() == "\u2705"
+            services_list[key] = value
+        return {"services": services_list}
 
 
 def main():
     registry = Registery(REGISTER_FILE)
     registry.scrape_details()
+    registry.save_json(REGISTER_FILE)
     registry.load_json(CORRECTIONS_FILE)
     registry.filter_status(keep=["Issued", "Application Received", "Issued with conditions"])
     registry.save_geojson("Ontario Retirement Homes", "data/homes.geojson")
