@@ -11,7 +11,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "65e709430d00d",
+                "id": "67f6614550429",
                 "name": "147 Elder Street Inc.",
                 "streetaddress": "147 Elder Street",
                 "latlng": "43.7628908,-79.454113",
@@ -44,8 +44,8 @@
                     "Doctor": true,
                     "Nurse": true
                 },
-                "number_of_suites": "52",
-                "resident_capacity": "52"
+                "number_of_suites": "73",
+                "resident_capacity": "73"
             },
             "geometry": {
                 "type": "Point",
@@ -1291,7 +1291,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "6773dcc531ade",
+                "id": "67ff9bc597098",
                 "name": "Amica On the Avenue",
                 "streetaddress": "1066 Avenue Road",
                 "latlng": "43.7058066,-79.4102162",
@@ -1395,7 +1395,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67c2f6c5ba5ab",
+                "id": "67fe4a4536626",
                 "name": "Amica Pickering",
                 "streetaddress": "1450 Pickering Parkway",
                 "latlng": "43.8349988,-79.0817612",
@@ -1692,7 +1692,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67922f456682e",
+                "id": "67f7b2c5444f4",
                 "name": "Amica Thornhill",
                 "streetaddress": "546 Steeles Avenue  W.",
                 "latlng": "43.7943884,-79.4390572",
@@ -2934,7 +2934,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "677e68c609a7e",
+                "id": "67f6614590895",
                 "name": "Aspira Heatherwood Retirement Living",
                 "streetaddress": "113 Scott Street",
                 "latlng": "43.1806392,-79.2550702",
@@ -3146,7 +3146,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "676aa245b1e24",
+                "id": "67fe4a4556b1d",
                 "name": "Aspira Kensington Place Retirement Living",
                 "streetaddress": "866 Sheppard Avenue  W.",
                 "latlng": "43.752649,-79.4540014",
@@ -3414,7 +3414,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "675c21c6019e9",
+                "id": "67f7b2c525c94",
                 "name": "Aspira Quinte Gardens Retirement Living",
                 "streetaddress": "30 College Street  W.",
                 "latlng": "44.176672,-77.3926407",
@@ -4021,7 +4021,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "6777d146831b5",
+                "id": "67ff9bc55663c",
                 "name": "Avalon Retirement Lodge",
                 "streetaddress": "355 Broadway Avenue",
                 "latlng": "43.9169909,-80.1165015",
@@ -4444,10 +4444,10 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67e3ec46422ad",
+                "id": "67f90444a416b",
                 "name": "Bayview Retirement Home",
                 "streetaddress": "175 Walnut Street",
-                "latlng": "44.7520281,-79.708294",
+                "latlng": "44.7520212,-79.7082644",
                 "postal": "L0K 2C0",
                 "lic_status": "Issued",
                 "citytown": "Waubaushene",
@@ -4483,8 +4483,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -79.708294,
-                    44.7520281
+                    -79.7082644,
+                    44.7520212
                 ]
             }
         },
@@ -4783,7 +4783,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f50fc529798",
+                "id": "67f7b2c5357aa",
                 "name": "Bertram Place Retirement Living Centre",
                 "streetaddress": "21 Hatt Street",
                 "latlng": "43.2650449,-79.9550811",
@@ -6294,7 +6294,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67e7e0c6234c1",
+                "id": "67ff9bc5b183b",
                 "name": "Brookside Court/Hilltop Place",
                 "streetaddress": "980-1000 Elgin Mills Road",
                 "latlng": "43.8966375,-79.4129545",
@@ -7818,7 +7818,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67e53dc65f638",
+                "id": "67f7b2c4dff86",
                 "name": "Cedarbrook Lodge Retirement Residence",
                 "streetaddress": "520 Markham Road",
                 "latlng": "43.7548516,-79.2248963",
@@ -7865,7 +7865,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "679b69c70bd85",
+                "id": "67fa55c5c7836",
                 "name": "Cedarcroft Place",
                 "streetaddress": "649 King Street  E.",
                 "latlng": "43.9026023,-78.839849",
@@ -10609,7 +10609,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67ebd545e8e1e",
+                "id": "67fe4a45653ff",
                 "name": "Chartwell Quail Creek Retirement Residence",
                 "streetaddress": "450 Albert Street",
                 "latlng": "45.4817041,-76.6992622",
@@ -10647,7 +10647,7 @@
                     "Doctor": false,
                     "Nurse": true
                 },
-                "number_of_suites": "93",
+                "number_of_suites": "90",
                 "resident_capacity": "120"
             },
             "geometry": {
@@ -11322,7 +11322,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67c83cc5a9085",
+                "id": "67fe4a459042d",
                 "name": "Chartwell Thornhill Retirement Residence",
                 "streetaddress": "784 Centre Street",
                 "latlng": "43.8099973,-79.4567205",
@@ -12818,7 +12818,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67cadfc5a86cd",
+                "id": "67f7b2c4b448d",
                 "name": "Country View Care",
                 "streetaddress": "9504 Road 38",
                 "latlng": "44.5971129,-76.6887972",
@@ -13478,7 +13478,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "66c485466859d",
+                "id": "67f661451c38f",
                 "name": "Don Mills Retirement Residence",
                 "streetaddress": "2 Green Belt Drive",
                 "latlng": "43.72815,-79.34018",
@@ -14001,7 +14001,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "667d5444e14d3",
+                "id": "67f7b2c4ecbe1",
                 "name": "Elder Care Retirement Home",
                 "streetaddress": "317 Main Street",
                 "latlng": "43.986327,-77.2302543",
@@ -14035,7 +14035,7 @@
                     "Nurse": true
                 },
                 "number_of_suites": "8",
-                "resident_capacity": "8"
+                "resident_capacity": "9"
             },
             "geometry": {
                 "type": "Point",
@@ -14198,7 +14198,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67d960456652a",
+                "id": "67fa55c564989",
                 "name": "Emerald Retirement Residence",
                 "streetaddress": "5807 Ferry Street",
                 "latlng": "43.0902973,-79.0909173",
@@ -14438,7 +14438,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b452d7cb",
+                "id": "67fe4a4573cc2",
                 "name": "Evergreen Retirement Residence",
                 "streetaddress": "820 Scollard Court",
                 "latlng": "43.5923644,-79.6713808",
@@ -14452,7 +14452,7 @@
                 "conditions_on_licence": "None",
                 "other_licence_information": "None",
                 "licensee_contact": "Mr David Bird",
-                "operations_manager": "Kenny Cherry",
+                "operations_manager": "Shantel Prashad",
                 "phone_number": "905-502-8882",
                 "web_address": "https://verveseniorliving.com/",
                 "email_address": "gm.evergreen@verveseniorliving.com",
@@ -14866,7 +14866,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "669903c45ad88",
+                "id": "67f661459dba4",
                 "name": "Four Elms Retirement Residence",
                 "streetaddress": "1500 Steeles Avenue  W.",
                 "latlng": "43.7877422,-79.4694672",
@@ -15007,7 +15007,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "65706243da1db",
+                "id": "67f6614583ab0",
                 "name": "Fox Run Retirement Residence",
                 "streetaddress": "104 Thousand Islands Parkway    RR 2",
                 "latlng": "44.3373129,-76.1270115",
@@ -15054,7 +15054,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67bdb0c5ea35d",
+                "id": "67fe4a454973e",
                 "name": "Foxview Retirement Community",
                 "streetaddress": "1026 Hunt Club Road",
                 "latlng": "45.3490055,-75.6565409",
@@ -15764,7 +15764,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "6571b3c302ba8",
+                "id": "67ff9bc549c3c",
                 "name": "Good Samaritan Retirement Lodge",
                 "streetaddress": "481 Victoria Street  E.",
                 "latlng": "44.1586426,-79.8452402",
@@ -16146,7 +16146,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "6762b947424c3",
+                "id": "67f661455ccbb",
                 "name": "Greenlife Retirement Residence Trenton Inc.",
                 "streetaddress": "114 Whites Road",
                 "latlng": "44.1254518,-77.509345",
@@ -16668,7 +16668,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "66bb4ac815bad",
+                "id": "67ff9bc5a5e0f",
                 "name": "Harrowood Seniors Community",
                 "streetaddress": "1 Pollard Drive",
                 "latlng": "42.0290641,-82.9206085",
@@ -16702,7 +16702,7 @@
                     "Nurse": true
                 },
                 "number_of_suites": "56",
-                "resident_capacity": "66"
+                "resident_capacity": "65"
             },
             "geometry": {
                 "type": "Point",
@@ -17233,7 +17233,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b44de9f4",
+                "id": "67f90444ddef7",
                 "name": "Highland Place",
                 "streetaddress": "20 Fieldgate Street",
                 "latlng": "43.4346009,-80.519329",
@@ -18601,7 +18601,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "65730542f0fc2",
+                "id": "67f661453a775",
                 "name": "L'chaim Retirement Homes Inc.",
                 "streetaddress": "718 Sheppard Avenue  W.",
                 "latlng": "43.7543655,-79.4453896",
@@ -21123,7 +21123,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67af3044d460e",
+                "id": "67ff9bc572dd5",
                 "name": "McCowan Retirement Residence",
                 "streetaddress": "2881 Eglinton Avenue  E.",
                 "latlng": "43.7381415,-79.2397845",
@@ -21311,7 +21311,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "66eac0c830720",
+                "id": "67fa55c584968",
                 "name": "Memory & Company",
                 "streetaddress": "100 Renfrew Drive     Unit 110",
                 "latlng": "43.8587385,-79.3637173",
@@ -22160,7 +22160,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67dd54c6263ef",
+                "id": "67ff9bc565da7",
                 "name": "Nine Mile Villa Inc.",
                 "streetaddress": "469 Inglis Street     Unit 24",
                 "latlng": "43.9595022,-81.5161591",
@@ -22536,7 +22536,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f50fc47e1fd",
+                "id": "67f7b2c47718d",
                 "name": "Oakville Estates Retirement Residence",
                 "streetaddress": "3000 Hospital Gate",
                 "latlng": "43.4475561,-79.7647002",
@@ -22818,7 +22818,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67e3ec467e79f",
+                "id": "67fa55c5adbf4",
                 "name": "Orchard Walk Retirement Living",
                 "streetaddress": "1491 Manotick Station Road",
                 "latlng": "45.2353415,-75.6095593",
@@ -22837,7 +22837,7 @@
                 "conditions_on_licence": "None",
                 "other_licence_information": "None",
                 "licensee_contact": "Ms Cathleen Cogan Bird",
-                "operations_manager": "Melanie Oostrom",
+                "operations_manager": "Branker Xavier",
                 "phone_number": "613-821-2233",
                 "web_address": "https://orchardwalkretirement.ca/",
                 "email_address": "care@orchardwalkretirement.ca",
@@ -23676,7 +23676,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "671a36c670880",
+                "id": "67f90444b789e",
                 "name": "Pearl and Pine Retirement Residence",
                 "streetaddress": "390 Pearl Street",
                 "latlng": "43.3262256,-79.7945198",
@@ -23958,7 +23958,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "678a46454ec7d",
+                "id": "67f90444ca174",
                 "name": "Pioneer Elder Care",
                 "streetaddress": "180A Lakeshore Road",
                 "latlng": "43.2077714,-79.2354562",
@@ -24052,7 +24052,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b44af716",
+                "id": "67ff9bc585bae",
                 "name": "Pleasant Valley Rest Home",
                 "streetaddress": "511 Queensville Side Road",
                 "latlng": "44.1301367,-79.4798343",
@@ -25543,7 +25543,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67a4a4457e88c",
+                "id": "67f7b2c4d0aee",
                 "name": "Retirement Suites by the Lake",
                 "streetaddress": "2121 Kingston Road",
                 "latlng": "43.7005755,-79.254233",
@@ -28097,7 +28097,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67a74744a5c6e",
+                "id": "67f661452e108",
                 "name": "Seasons Stoney Creek",
                 "streetaddress": "8 Shoreview Place",
                 "latlng": "43.237535,-79.715852",
@@ -28191,7 +28191,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67d17745110bc",
+                "id": "67fe4a4581197",
                 "name": "Seasons Welland",
                 "streetaddress": "163 First Avenue",
                 "latlng": "43.0020201,-79.2607333",
@@ -28385,7 +28385,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "66338043a51fc",
+                "id": "67fa55c573532",
                 "name": "Serenity-Durham",
                 "streetaddress": "618 William Street    PO Box 1134",
                 "latlng": "44.1763254,-80.8185006",
@@ -28432,7 +28432,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "6650814560df4",
+                "id": "67f661450e342",
                 "name": "Shalom Gardens Apartments",
                 "streetaddress": "12 Bartlett Avenue",
                 "latlng": "43.1865349,-79.5252624",
@@ -30380,7 +30380,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67c053c67ae99",
+                "id": "67f7b2c517625",
                 "name": "Sunrise Senior Living of Windsor",
                 "streetaddress": "5065 Riverside Drive  E.",
                 "latlng": "42.3288156,-82.9774861",
@@ -30475,24 +30475,24 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67c98e45dad5b",
+                "id": "67f904450a995",
                 "name": "Supples Landing Retirement Residence",
                 "streetaddress": "201 Joseph Street",
                 "latlng": "45.8297264,-77.1109302",
                 "postal": "K8A 8J2",
                 "lic_status": "Issued",
                 "citytown": "Pembroke",
-                "lic_number": "N0016",
+                "lic_number": "N01864",
                 "documents": [],
                 "previously_known_as": [],
-                "first_issue_date": "2013-05-16",
+                "first_issue_date": "2025-03-26",
                 "conditions_on_licence": "None",
                 "other_licence_information": "None",
-                "licensee_contact": "Sherry Georgeoff",
+                "licensee_contact": "Mrs Diana Yakhni",
                 "operations_manager": "Sherry Georgeoff",
                 "phone_number": "613-732-0077",
-                "web_address": "https://suppleslanding.com/",
-                "email_address": "exec@suppleslanding.com; admin@suppleslanding.com",
+                "web_address": "https://suppleslanding.com",
+                "email_address": "admin@suppleslanding.com",
                 "services": {
                     "Bathing": true,
                     "Hygiene": true,
@@ -30805,7 +30805,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "679380c5959b3",
+                "id": "67f7b2c4c35e2",
                 "name": "The Annex",
                 "streetaddress": "123 Spadina Road",
                 "latlng": "43.6716697,-79.4053587",
@@ -30821,7 +30821,7 @@
                 "licensee_contact": "Ms Hartini Kumar",
                 "operations_manager": "Mr James Lofranco",
                 "phone_number": "416-961-6446",
-                "web_address": "https://www.venviliving.com/the-annex",
+                "web_address": "https://www.venviliving.com",
                 "email_address": "theannex@cogirseniorliving.ca",
                 "services": {
                     "Bathing": true,
@@ -31698,7 +31698,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f50fc552e3a",
+                "id": "67f66145aa878",
                 "name": "The LeBlanc Rest Home",
                 "streetaddress": "40 Toronto Street",
                 "latlng": "44.1137739,-79.5716677",
@@ -31888,7 +31888,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67c83cc56df0a",
+                "id": "67f661456ee1f",
                 "name": "The Mayfield Retirement Residence",
                 "streetaddress": "248 Park Street  W.",
                 "latlng": "44.7120915,-75.5190109",
@@ -31902,10 +31902,10 @@
                 "conditions_on_licence": "None",
                 "other_licence_information": "None",
                 "licensee_contact": "Gershon Fordsham",
-                "operations_manager": "Christina Bowlby",
+                "operations_manager": "Diana Edgett",
                 "phone_number": "613-925-3784",
                 "web_address": "https://themayfield.ca/",
-                "email_address": "laura.dunnington@themayfield.ca",
+                "email_address": "diana.edgett@themayfield.ca",
                 "services": {
                     "Bathing": true,
                     "Hygiene": true,
@@ -32982,7 +32982,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b443edd8",
+                "id": "67fa55c53c809",
                 "name": "The Village of Erin Meadows",
                 "streetaddress": "2930 Erin Centre Blvd.",
                 "latlng": "43.5530253,-79.7213644",
@@ -33405,7 +33405,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b440c06c",
+                "id": "67f7b2c4841e4",
                 "name": "The Vista on Sparks",
                 "streetaddress": "412 Sparks St",
                 "latlng": "45.4181353,-75.7076826",
@@ -33420,7 +33420,7 @@
                 "other_licence_information": "None",
                 "licensee_contact": "Ms Kerri Sharp",
                 "operations_manager": "Carlo Cardenas",
-                "phone_number": "613-898-8277",
+                "phone_number": "613 809-2212",
                 "web_address": "https://www.thevistaonsparks.com",
                 "email_address": "info@thevistaonsparks.com",
                 "services": {
@@ -35465,7 +35465,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "67f11b44748d0",
+                "id": "67f7b2c49c595",
                 "name": "Villa Elmsmere Villa",
                 "streetaddress": "889 Elmsmere Road",
                 "latlng": "45.4447933,-75.6030941",
@@ -35495,7 +35495,7 @@
                     "Dementia": false,
                     "Dressing": true,
                     "Pharmacist": true,
-                    "Doctor": true,
+                    "Doctor": false,
                     "Nurse": true
                 },
                 "number_of_suites": "55",
@@ -36133,7 +36133,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "678b97c55bf22",
+                "id": "67fa55c5b85fd",
                 "name": "Walford Hillside Park",
                 "streetaddress": "11 Mississauga Avenue",
                 "latlng": "46.378213,-82.649063",
@@ -36180,7 +36180,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "672b5a469b856",
+                "id": "67fa55c5a061f",
                 "name": "Walford on the Hill",
                 "streetaddress": "48 Wall Street",
                 "latlng": "45.515451,-74.6531697",
@@ -36327,7 +36327,7 @@
         {
             "type": "Feature",
             "properties": {
-                "id": "66f69e45b1c88",
+                "id": "67fa55c54b24c",
                 "name": "Waterford Retirement Community - Barrhaven",
                 "streetaddress": "121 Marketplace Avenue",
                 "latlng": "45.27126,-75.73866",
@@ -37625,6 +37625,45 @@
         {
             "type": "Feature",
             "properties": {
+                "id": "67f90444b1afe",
+                "name": "Bayview Retirement Home",
+                "streetaddress": "175 Walnut Street",
+                "latlng": "44.7520212,-79.7082644",
+                "postal": "L0K 2C0",
+                "lic_status": "Application Received",
+                "citytown": "Waubaushene",
+                "lic_number": "N01972",
+                "documents": [],
+                "previously_known_as": [],
+                "services": {
+                    "Bathing": true,
+                    "Hygiene": true,
+                    "Walking": true,
+                    "Feeding": true,
+                    "Wounds": false,
+                    "Continence": false,
+                    "Drugs": false,
+                    "Meals": false,
+                    "Dementia": false,
+                    "Dressing": true,
+                    "Pharmacist": false,
+                    "Doctor": false,
+                    "Nurse": false
+                },
+                "number_of_suites": "33",
+                "resident_capacity": "45"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -79.7082644,
+                    44.7520212
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
                 "id": "6766adc587d62",
                 "name": "Bloom London",
                 "streetaddress": "3050 Tillmann Road",
@@ -37775,45 +37814,6 @@
                 "coordinates": [
                     -80.2414543,
                     44.5100809
-                ]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "id": "67c98e45efc8f",
-                "name": "Supples Landing Retirement Residence",
-                "streetaddress": "201 Joseph Street",
-                "latlng": "45.8297264,-77.1109302",
-                "postal": "K8A 8J2",
-                "lic_status": "Application Received",
-                "citytown": "Pembroke",
-                "lic_number": "N01864",
-                "documents": [],
-                "previously_known_as": [],
-                "services": {
-                    "Bathing": true,
-                    "Hygiene": true,
-                    "Walking": false,
-                    "Feeding": false,
-                    "Wounds": true,
-                    "Continence": true,
-                    "Drugs": true,
-                    "Meals": false,
-                    "Dementia": false,
-                    "Dressing": true,
-                    "Pharmacist": true,
-                    "Doctor": false,
-                    "Nurse": true
-                },
-                "number_of_suites": "81",
-                "resident_capacity": "95"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.1109302,
-                    45.8297264
                 ]
             }
         }

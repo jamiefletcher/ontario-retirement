@@ -3,7 +3,9 @@ import os
 import random
 from typing import Any, Dict, List
 
-from utils import ascii_only, clean_string, load_json, save_json, scrape, scrape_html, save_geojson
+from bs4 import BeautifulSoup
+
+from utils import ascii_only, clean_string, load_json, save_geojson, save_json, scrape
 
 REGISTER_FILE = "data/rhra_register.json"
 CORRECTIONS_FILE = "data/corrections.json"
@@ -17,15 +19,15 @@ class Registery:
     def __init__(self, filename: str = ""):
         self.residences: Dict[str, Residence] = {}
         if filename and os.path.exists(filename):
-            self.load_json(filename)
+            self.load_json(filename, update_only=False)
         else:
             self.load_url(Registery.registry_url)
 
-    def load_json(self, filename: str):
+    def load_json(self, filename: str, update_only = True):
         for r_id, r_attrib in load_json(filename).items():
-            if r_id not in self.residences:
+            if r_id not in self.residences and not update_only:
                 self.residences[r_id] = Residence(r_attrib)
-            else:
+            elif r_id in self.residences:
                 self.residences[r_id].update(r_attrib)
 
     def load_url(self, url: str):
@@ -58,7 +60,6 @@ class Registery:
             r_status = r.attributes.get("lic_status")
             if r_status in Registery.status_operating and "services" not in r.attributes:
                 r.scrape()
-            # r.fix_services()
 
     def save_json(self, filename: str):
         if self.residences:
@@ -73,66 +74,25 @@ class Registery:
 
 class Residence:
     base_url = "https://www.rhra.ca/en/register/homeid"
-    services_map = {
-        "Assistance with bathing ": "Bathing",
-        "Assistance with personal hygiene ": "Hygiene",
-        "Assistance with ambulation ": "Walking",
-        "Assistance with feeding ": "Feeding",
-        "Provision of skin and wound care ": "Wounds",
-        "Continence care ": "Continence",
-        "Administration of drugs or another substance ": "Drugs",
-        "Provision of a meal ": "Meals",
-        "Dementia care program ": "Dementia",
-        "Assistance with dressing ": "Dressing",
-        "Any service that a member of the Ontario College of Pharmacists provides while engaging in the practice of pharmacy ": "Pharmacist",
-        "Any service that a member of the College of Physicians and Surgeons of Ontario provides while engaging in the practice of medicine ": "Doctor",
-        "Any service that a member of the College of Nurses of Ontario provides while engaging in the practice of nursing ": "Nurse",
-    }
-    extra_keys = [
-        "first_issue_date",
-        "conditions_on_licence",
-        "other_licence_information",
-        "licensee_contact",
-        "operations_manager",
-        "phone_number",
-        "web_address",
-        "email_address",
-        "number_of_suites",
-        "resident_capacity",
-    ]
 
     def __init__(self, attributes: Dict[str, Any]):
         self.attributes = attributes
         self.id = self.attributes.get("id")
 
-    def scrape(self):
-        parse_tree = scrape_html(f"{Residence.base_url}/{self.id}", ["body"])
-        extra_attributes = {}
-        for node in parse_tree.find_all(*["div", "row my-4"]):
-            contents = [c for c in node.contents if not c.text.strip() == ""]
-            if len(contents) == 2:
-                key, value = contents
-                key = ascii_only(clean_string(key))
-                if key in Residence.extra_keys:
-                    extra_attributes[key] = clean_string(value)
-            else:
-                services = node.find(*["ul", "careservices_list"])
-                if services:
-                    services = [c for c in services.contents if not c.text.strip() == ""]
-                    services_list = {}
-                    for s in services:
-                        key, value = s.text.split("-")
-                        key = Residence.services_map[key] if key in Residence.services_map else key
-                        value = value.strip() == "\u2705"
-                        services_list[key] = value
-                    extra_attributes["services"] = services_list
-        self.attributes.update(extra_attributes)
+    def scrape(self, target: Dict[str, str] = {"id": "accordionPR", "role": "tablist"}):
+        html_content = scrape(f"{Residence.base_url}/{self.id}")
+        parse_tree = BeautifulSoup(html_content, features="html.parser").find(**target)      
+        children: List[BeautifulSoup] = [child for child in parse_tree if child.name is not None]
 
-    def fix_services(self):
-        old_services = self.attributes.get("services")
-        if old_services:
-            new_services = {Residence.services_map[k]: v for k, v in old_services.items()}
-            self.attributes["services"] = new_services
+        extra_attributes = {}
+        while children:
+            section_title: str = children.pop(0).text.strip().lower()
+            section_data = children.pop(0)
+            # print(section_title)
+            new_attrs = Extractor(section_title).apply(section_data)
+            extra_attributes.update(new_attrs)
+        
+        self.attributes.update(extra_attributes)
 
     def update(self, attributes: Dict[str, Any]):
         self.attributes.update(attributes)
@@ -153,6 +113,67 @@ class Residence:
     @property
     def json(self) -> Dict[str, Any]:
         return self.attributes
+
+
+class Extractor:
+    _extra_keys = [
+        "first_issue_date",
+        "conditions_on_licence",
+        "other_licence_information",
+        "licensee_contact",
+        "operations_manager",
+        "phone_number",
+        "web_address",
+        "email_address",
+        "number_of_suites",
+        "resident_capacity",
+    ]
+    _services_map = {
+        "Assistance with bathing ": "Bathing",
+        "Assistance with personal hygiene ": "Hygiene",
+        "Assistance with ambulation ": "Walking",
+        "Assistance with feeding ": "Feeding",
+        "Provision of skin and wound care ": "Wounds",
+        "Continence care ": "Continence",
+        "Administration of drugs or another substance ": "Drugs",
+        "Provision of a meal ": "Meals",
+        "Dementia care program ": "Dementia",
+        "Assistance with dressing ": "Dressing",
+        "Any service that a member of the Ontario College of Pharmacists provides while engaging in the practice of pharmacy ": "Pharmacist",
+        "Any service that a member of the College of Physicians and Surgeons of Ontario provides while engaging in the practice of medicine ": "Doctor",
+        "Any service that a member of the College of Nurses of Ontario provides while engaging in the practice of nursing ": "Nurse",
+    }
+    
+    def __init__(self, section: str = ""):
+        self.methods = {
+            "care services": Extractor._services,
+        }
+        self.apply = self.methods.get(section, Extractor._default)
+
+    def _default(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
+        extra_attributes = {}
+        for node in root.find_all(*target):
+            contents = [c for c in node.contents if not c.text.strip() == ""]
+            if len(contents) == 2:
+                key, value = contents
+                key = ascii_only(clean_string(key))
+                if key in Extractor._extra_keys:
+                    extra_attributes[key] = clean_string(value)
+        return extra_attributes
+    
+    def _services(root: BeautifulSoup, target = ["ul", "careservices_list"]) -> Dict[str, Any]:
+        extra_attributes = {}
+        services = root.find(*["ul", "careservices_list"])
+        if services:
+            services = [c for c in services.contents if not c.text.strip() == ""]
+            services_list = {}
+            for s in services:
+                key, value = s.text.split("-")
+                key = Extractor._services_map[key] if key in Extractor._services_map else key
+                value = value.strip() == "\u2705"
+                services_list[key] = value
+            extra_attributes["services"] = services_list
+        return extra_attributes
 
 
 def main():
