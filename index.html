@@ -4,11 +4,10 @@
     <meta charset='utf-8' />
     <title>Ontario Retirement</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..700;1,100..700&display=swap"
-    rel="stylesheet">
-    <link href="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.js"></script>
+    <link href="assets/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="lib/maplibre-gl.css" rel="stylesheet" />
+    <script src="lib/maplibre-gl.js"></script>
     <style>
         * {
             color: hsl(0, 0%, 40%);
@@ -106,7 +105,7 @@
 
         .filter-option {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             margin-top: 10px;
         }
 
@@ -164,6 +163,7 @@
             container: 'map',
             style: styleFile,
             hash: true,
+            pixelRatio: 1,
             center: [-79.45, 43.75],
             zoom: 11,
             minZoom: 5,
@@ -277,9 +277,9 @@
                         paint: {
                             'circle-radius': 50,
                             'circle-color': 'hsl(20, 50%, 50%)',
-                            'circle-opacity': 0.1,
+                            'circle-opacity': 0.2,
                         },
-                        minzoom: 15
+                        minzoom: 13
                     });
 
                     map.addLayer({
@@ -287,9 +287,9 @@
                         type: 'circle',
                         source: 'points',
                         paint: {
-                            'circle-radius': 5,
+                            'circle-radius': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 10 ],
                             'circle-color': 'hsl(20, 50%, 50%)',
-                            'circle-stroke-width': 1,
+                            'circle-stroke-width': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 2 ],
                             'circle-stroke-color': 'hsl(0, 0%, 100%)'
                         }
                     });

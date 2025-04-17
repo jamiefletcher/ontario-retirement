@@ -17,7 +17,7 @@
 			"id": "background",
 			"type": "background",
 			"paint": {
-				"background-color": "hsl(0, 20%, 95%)"
+				"background-color": "hsl(0, 20%, 93%)"
 			}
 		},
 		{
@@ -49,14 +49,14 @@
 				"fill-color": "hsl(110, 60%, 80%)",
 			  	"fill-opacity": 1
 			}
-		},
+		},  
 		{
 			"source": "osm",
 			"id": "building",
 			"type": "fill",
 			"source-layer": "buildings",
 			"paint": {
-				"fill-color": "hsl(42, 35%, 90%)",
+				"fill-color": "hsl(42, 35%, 87%)",
 				"fill-opacity": { "stops": [ [ 14, 0 ], [ 15, 1 ] ] }
 			}
 		},
@@ -83,7 +83,7 @@
 			"source-layer": "streets",
 			"filter": [ "in", "kind", "residential" ],
 			"paint": {
-				"line-color": "hsl(0, 5%, 90%)",
+				"line-color": "hsl(224, 26%, 85%)",
 				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 0, 20, 92 ]
 			},
 			"layout": {
