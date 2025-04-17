@@ -107,6 +107,16 @@
 			}
 		},
 		{
+			"id": "neighborhood-boundaries",
+			"type": "line",
+			"source": "osm",
+			"source-layer": "boundaries",
+			"paint": {
+			  "line-color": "#ff6600",
+			  "line-width": 10
+			}
+		},
+		{
 			"source": "osm",
 			"id": "pois",
 			"type": "symbol",
@@ -162,6 +172,22 @@
 				"symbol-placement": "line",
 				"text-anchor": "center",
 				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 10, 20, 20 ]
+			},
+			"paint": {
+				"text-color": "hsl(0, 0%, 20%)"
+			}
+		},
+		{
+			"source": "osm",
+			"id": "label-place",
+			"type": "symbol",
+			"source-layer": "place_labels",
+			"filter": [ "in", "kind", "neighbourhood", "quarter", "suburb" ],
+			"layout": {
+				"text-field": "{name}",
+				"text-font": [ "montserrat-regular" ],
+				"text-size": { "stops": [ [ 14, 12 ] ] },
+				"text-transform": "uppercase"
 			},
 			"paint": {
 				"text-color": "hsl(0, 0%, 20%)"
