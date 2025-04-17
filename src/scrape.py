@@ -88,10 +88,8 @@ class Residence:
         while children:
             section_title: str = children.pop(0).text.strip().lower()
             section_data = children.pop(0)
-            # print(section_title)
             new_attrs = Extractor(section_title).apply(section_data)
-            extra_attributes.update(new_attrs)
-        
+            extra_attributes.update(new_attrs)        
         self.attributes.update(extra_attributes)
 
     def update(self, attributes: Dict[str, Any]):
@@ -149,6 +147,7 @@ class Extractor:
         self.methods = {
             "licence information": Extractor._summary,
             "care services": Extractor._services,
+            "inspection reports": Extractor._reports,
         }
         self.apply = self.methods.get(section, Extractor._default)
 
@@ -170,7 +169,6 @@ class Extractor:
             if len(contents) == 2:
                 key, value = contents
                 key = ascii_only(clean_string(key))
-                # if key in Extractor._extra_keys:
                 extra_attributes[key] = clean_string(value)
             elif len(contents) == 1:
                 para: BeautifulSoup = contents[0].find("p")
@@ -193,6 +191,20 @@ class Extractor:
             value = value.strip() == "\u2705"
             services_list[key] = value
         return {"services": services_list}
+    
+    def _reports(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
+        base_url = "https://www.rhra.ca"
+        reports = {}
+        for node in root.find_all(*target):
+            contents = [c for c in node.contents if not c.text.strip() == ""]
+            if len(contents) == 2:
+                date, link = contents
+                link = link.find("a")
+                if date and link:
+                    date = date.text
+                    url = f"{base_url}{link['href']}"
+                    reports[date] = url
+        return {"reports": reports}
 
 
 def main():
