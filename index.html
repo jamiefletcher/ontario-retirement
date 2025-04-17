@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset='utf-8' />
-    <title>Maplibre GL JS with GeoJSON</title>
+    <title>Ontario Retirement</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
-    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.js"></script>
     <style>
+        * {
+            color: hsl(0, 0%, 40%);
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -20,70 +29,131 @@
             width: 100%;
         }
 
-        #filter-ui {
+        .popup-container {
+            max-width: 300px;
+        }
+
+        .maplibregl-popup-content {
+            padding: 10px;
+            margin: 0px;
+        }
+
+        .contact-info {
+            margin: 5px 0;
+        }
+
+        .contact-info div {
             display: flex;
-            position: fixed;
             align-items: center;
-            top: 10px;
-            left: 0;
-            right: 0;
-            overflow-x: auto;
-            overflow-y: visible;
-            z-index: 1000;
-            max-width: 90vw;
-            height: auto;
-            margin: 0 auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            filter: drop-shadow(2px 2px 2px hsla(0, 0%, 0%, 0.2));
+            gap: 5px; /* space between icon and text */
+        }
+
+        .contact-info i {
+            font-size: 12px;
+            width: 1.25em;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .capacity {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: hsl(0, 0%, 97%);
             border-radius: 5px;
+        }
+
+        .services-grid {
+            padding: 5px;
+            background-color: hsl(0, 0%, 97%);
+            border-radius: 5px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .service-item i {
+            font-size: 12px;
+        }
+
+        #filter-ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 2px hsla(0,0%,0%,.1);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         #service-filters {
             display: flex;
-            flex-wrap: nowrap;
-            gap: 15px;
-            background: white;
-            align-items: center;
-            padding-right: 10px;
+            flex-direction: column;
         }
 
-        #service-filters h2 {
-            font-size: 16px;
-            white-space: nowrap;
-            padding-left: 10px; 
-        }
-
-        .filter-group {
-            margin-bottom: 10px;
-        }
-
-        .filter-group h3 {
-            margin: 0 0 5px 0;
-            font-size: 14px;
+        .filter-options {
+            display: none; /* Start hidden */
+            flex-direction: column;
         }
 
         .filter-option {
-            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
         }
 
         .filter-option label {
-            display: flex;
-            align-items: center;
             cursor: pointer;
+            user-select: none;
         }
 
-        .filter-option input {
-            margin-right: 5px;
+        .filter-option input[type="checkbox"] {
+            margin: 0 8px 0 0;
         }
+
+        .toggle-icon {
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        a {
+            color: hsl(200, 50%, 40%);
+            text-decoration: none !important;
+            border: none;
+            outline: none;
+        }
+
+        h2 {
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2rem;
+        }
+
+        .ellipsis {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 175px;
+        }
+
     </style>
 </head>
-
 <body>
     <div id='map'></div>
     <div id='filter-ui'>
         <div id='service-filters'>
-            <h2>Services</h2>
+            <h2>Filters</h2>
             <!-- Filters will be added here dynamically -->
         </div>
     </div>
@@ -93,89 +163,32 @@
         const map = new maplibregl.Map({
             container: 'map',
             style: styleFile,
+            hash: true,
             center: [-79.45, 43.75],
-            zoom: 11
+            zoom: 11,
+            minZoom: 5,
+            maxZoom: 18
         });
 
-        // Store the original features for filtering
         let allFeatures = [];
-
-        // Create filter checkboxes
-        createServiceFilters();
-
-        // Wait for the map to load before adding GeoJSON
-        map.on('load', () => {
-            fetch(pointsFile)
-                .then(response => response.json())
-                .then(data => {
-                    allFeatures = data.features;
-
-                    // Add source with all data initially
-                    map.addSource('points', {
-                        type: 'geojson',
-                        data: data,
-                        cluster: false
-                    });
-
-                    map.addLayer({
-                        id: 'points',
-                        type: 'circle',
-                        source: 'points',
-                        paint: {
-                            'circle-radius': 8,
-                            'circle-color': '#ff0000',
-                            'circle-stroke-width': 2,
-                            'circle-stroke-color': '#ffffff'
-                        }
-                    });
-
-                    // Add click interaction to show popup
-                    map.on('click', 'points', (e) => {
-                        const properties = e.features[0].properties
-                        const geometry = e.features[0].geometry
-                        const html = `
-                            <h3>${properties.name}</h3>
-                            <ul>
-                                <li>${properties.streetaddress}</li>
-                                <li>${properties.phone_number}</li>
-                                <li>${properties.web_address}</li>
-                                <li>${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</li>
-                            </ul>
-                        `;
-                        new maplibregl.Popup()
-                            .setLngLat(geometry.coordinates)
-                            .setHTML(html)
-                            .addTo(map);
-                    });
-
-                    // Change cursor to pointer when hovering over points
-                    map.on('mouseenter', 'points', () => {
-                        map.getCanvas().style.cursor = 'pointer';
-                    });
-                    map.on('mouseleave', 'points', () => {
-                        map.getCanvas().style.cursor = '';
-                    });
-                });
-        });
 
         function createServiceFilters() {
             const container = document.getElementById('service-filters');
             const services = [
-                "Bathing",
-                "Hygiene",
-                "Walking",
-                "Feeding",
-                "Wounds",
-                "Continence",
-                "Drugs",
-                "Meals",
-                "Dementia",
-                "Dressing",
-                "Pharmacist",
-                "Doctor",
-                "Nurse"
-            ]
+                "Bathing", "Hygiene", "Walking", "Feeding", 
+                "Wounds", "Continence", "Drugs", "Meals",
+                "Dementia", "Dressing", "Pharmacist", "Doctor", "Nurse"
+            ];
 
+            // Create the services header with toggle
+            const header = container.querySelector('h2');
+            header.innerHTML = 'Filters <span class="toggle-icon">[+]</span>';
+            header.style.cursor = 'pointer'; // Make it clickable
+
+            // Create options container (initially hidden)
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'filter-options';
+            
             services.forEach(service => {
                 const option = document.createElement('div');
                 option.className = 'filter-option';
@@ -184,7 +197,7 @@
                 checkbox.type = 'checkbox';
                 checkbox.id = `filter-${service}`;
                 checkbox.value = service;
-                checkbox.checked = false; // Start with all filters unchecked
+                checkbox.checked = false;
                 checkbox.addEventListener('change', updateFilteredData);
 
                 const label = document.createElement('label');
@@ -193,8 +206,21 @@
                 label.appendChild(document.createTextNode(service));
 
                 option.appendChild(label);
-                container.appendChild(option);
+                optionsContainer.appendChild(option);
             });
+
+            container.appendChild(optionsContainer);
+
+            // Toggle functionality
+            header.addEventListener('click', () => {
+                optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none';
+                const icon = header.querySelector('.toggle-icon');
+                icon.textContent = optionsContainer.style.display === 'none' ? '[+]' : '[-]';
+            });
+
+            // Start collapsed
+            optionsContainer.style.display = 'none';
+            container.appendChild(optionsContainer);
         }
 
         function updateFilteredData() {
@@ -207,7 +233,6 @@
                 }
             });
 
-            // If no filters are active, show all points
             if (activeFilters.length === 0) {
                 const allGeoJSON = {
                     type: 'FeatureCollection',
@@ -217,32 +242,111 @@
                 return;
             }
 
-            // Filter features based on active filters
             const filteredFeatures = allFeatures.filter(feature => {
                 if (!feature.properties.services) return false;
-
-                // Check if the feature has ALL active filters set to TRUE
                 return activeFilters.every(service =>
                     feature.properties.services[service] === true
                 );
             });
 
-            // Update the map source with filtered data
-            const filteredGeoJSON = {
+            map.getSource('points').setData({
                 type: 'FeatureCollection',
                 features: filteredFeatures
-            };
-
-            map.getSource('points').setData(filteredGeoJSON);
+            });
         }
 
-        function getServiceList(services) {
-            if (!services) return 'None listed';
+        // Initialize filters
+        createServiceFilters();
 
-            const activeServices = Object.keys(services).filter(service => services[service]);
-            return activeServices.join(', ');
-        }
+        map.on('load', () => {
+            fetch(pointsFile)
+                .then(response => response.json())
+                .then(data => {
+                    allFeatures = data.features;
+
+                    map.addSource('points', {
+                        type: 'geojson',
+                        data: data,
+                        cluster: false
+                    });
+
+                    map.addLayer({
+                        id: 'points-blast-radius',
+                        type: 'circle',
+                        source: 'points',
+                        paint: {
+                            'circle-radius': 50,
+                            'circle-color': 'hsl(20, 50%, 50%)',
+                            'circle-opacity': 0.1,
+                        },
+                        minzoom: 15
+                    });
+
+                    map.addLayer({
+                        id: 'points',
+                        type: 'circle',
+                        source: 'points',
+                        paint: {
+                            'circle-radius': 5,
+                            'circle-color': 'hsl(20, 50%, 50%)',
+                            'circle-stroke-width': 1,
+                            'circle-stroke-color': 'hsl(0, 0%, 100%)'
+                        }
+                    });
+
+                    map.on('click', 'points', (e) => {
+                        const properties = e.features[0].properties;
+                        const geometry = e.features[0].geometry;
+                        const searchQuery = encodeURIComponent(`${properties.name} ${properties.streetaddress}`);
+
+                        // Parse services JSON if it's a string
+                        const services = typeof properties.services === 'string'
+                            ? JSON.parse(properties.services)
+                            : properties.services;
+
+                        // Build services HTML
+                        let servicesHTML = '';
+                        for (const [service, available] of Object.entries(services)) {
+                            servicesHTML += `
+                                <div class="service-item">
+                                    <span>${available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'} ${service}</span>
+                                </div>
+                            `;
+                        }
+
+                        const html = `
+                            <div class="popup-container">
+                                
+                                <h2>${properties.name}</h2>
+
+                                <div class="contact-info">
+                                    <div><i class="fa-solid fa-location-dot"></i><a href="https://www.google.com/maps/search/?api=1&query=${searchQuery}" target="_blank">${properties.streetaddress}</a></div>
+                                    <div><i class="fa-solid fa-phone"></i><a href="tel:${properties.phone_number}">${properties.phone_number}</a></div>
+                                    <div><i class="fa-solid fa-globe"></i><a href="${properties.web_address}" class="ellipsis target="_blank">${properties.web_address}</a></div>
+                                </div>
+
+                                <div class="capacity">${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</div>
+
+                                <div class="services-grid">
+                                    ${servicesHTML}
+                                </div>
+                            </div>
+                        `;
+
+                        new maplibregl.Popup()
+                            .setLngLat(geometry.coordinates)
+                            .setHTML(html)
+                            .addTo(map);
+                    });
+
+                    map.on('mouseenter', 'points', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'points', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
+                });
+        });
     </script>
 </body>
-
 </html>
