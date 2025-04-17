@@ -114,19 +114,6 @@ class Residence:
 
 
 class Extractor:
-    _extra_keys = [
-        "first_issue_date",
-        "conditions_on_licence",
-        "other_licence_information",
-        "licensee_contact",
-        "operations_manager",
-        "phone_number",
-        "web_address",
-        "email_address",
-        "number_of_suites",
-        "resident_capacity",
-    ]
-    _mandatory_inspection = ["Mandatory Report Inspection", "Mandatory Inspection"]
     _services_map = {
         "Assistance with bathing ": "Bathing",
         "Assistance with personal hygiene ": "Hygiene",
@@ -147,9 +134,17 @@ class Extractor:
         self.methods = {
             "licence information": Extractor._summary,
             "care services": Extractor._services,
+            "number of suites / fire sprinklers": Extractor._default,
             "inspection reports": Extractor._reports,
+            "registrar enforcement orders": Extractor._orders,
+            "external proceedings, orders and decisions": Extractor._proceedings,
+            "conditions on the licence": Extractor._noop,
+            "persons with controlling interest": Extractor._noop,
         }
-        self.apply = self.methods.get(section, Extractor._default)
+        self.apply = self.methods.get(section, Extractor._noop)
+
+    def _noop(root: BeautifulSoup) -> Dict[str, Any]:
+        return {}
 
     def _default(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
         extra_attributes = {}
@@ -158,8 +153,7 @@ class Extractor:
             if len(contents) == 2:
                 key, value = contents
                 key = ascii_only(clean_string(key))
-                if key in Extractor._extra_keys:
-                    extra_attributes[key] = clean_string(value)
+                extra_attributes[key] = clean_string(value)
         return extra_attributes
     
     def _summary(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
@@ -171,18 +165,18 @@ class Extractor:
                 key = ascii_only(clean_string(key))
                 extra_attributes[key] = clean_string(value)
             elif len(contents) == 1:
-                para: BeautifulSoup = contents[0].find("p")
+                paragraphs: BeautifulSoup = contents[0].find("p")
+                paragraphs = [] if paragraphs is None else paragraphs
                 mandatory_inspection = False
-                if para:
-                    for t in Extractor._mandatory_inspection:
-                        if t in para.text:
-                            mandatory_inspection = True
-                            break
+                for p in paragraphs:
+                    if "mandatory" in p.text.lower():
+                        mandatory_inspection = True
+                        break
                 extra_attributes["mandatory_inspection"] = mandatory_inspection
         return extra_attributes
     
     def _services(root: BeautifulSoup, target = ["ul", "careservices_list"]) -> Dict[str, Any]:
-        services = root.find(*["ul", "careservices_list"])
+        services = root.find(*target)
         services = [c for c in services.contents if not c.text.strip() == ""]
         services_list = {}
         for s in services:
@@ -192,7 +186,7 @@ class Extractor:
             services_list[key] = value
         return {"services": services_list}
     
-    def _reports(root: BeautifulSoup, target = ["div", "row my-4"]) -> Dict[str, Any]:
+    def _reports(root: BeautifulSoup, target = ["div", "row my-4"], key="reports") -> Dict[str, Any]:
         base_url = "https://www.rhra.ca"
         reports = {}
         for node in root.find_all(*target):
@@ -204,8 +198,13 @@ class Extractor:
                     date = date.text
                     url = f"{base_url}{link['href']}"
                     reports[date] = url
-        return {"reports": reports}
+        return {key: reports}
 
+    def _orders(root: BeautifulSoup) -> Dict[str, Any]:
+        return Extractor._reports(root, key="orders")
+    
+    def _proceedings(root: BeautifulSoup) -> Dict[str, Any]:
+        return Extractor._reports(root, key="proceedings")
 
 def main():
     registry = Registery(REGISTER_FILE)
