@@ -5,7 +5,7 @@
 		"maputnik:renderer": "mbgljs"
 	},
 	"glyphs": "assets/fonts/{fontstack}/{range}.pbf",
-	"sprite": "assets/sprites/sprites",
+	"sprite": "https://jamiefletcher.github.io/ontario-retirement/assets/sprites/sprites",
 	"sources": {
 		"osm": {
 			"type": "vector",
