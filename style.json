@@ -124,8 +124,8 @@
 			},
 			"paint": {
 				"icon-opacity": { "stops": [ [ 13, 0 ], [ 14, 1] ] },
-				"icon-color": "hsl(0, 0%, 40%)",
-				"text-color": "hsl(0, 0%, 40%)"
+				"icon-color": "hsl(0, 0%, 20%)",
+				"text-color": "hsl(0, 0%, 20%)"
 			}
 		},
 		{
@@ -137,7 +137,7 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-transform": "uppercase",
-				"text-font": [ "montserrat-regular" ],
+				"text-font": [ "montserrat-semibold" ],
 				"text-letter-spacing": 0.2,
 				"symbol-placement": "line",
 				"symbol-spacing": [ "interpolate", [ "linear" ], [ "zoom" ], 12, 200, 20, 400 ],
@@ -157,8 +157,8 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-transform": "uppercase",
-				"text-font": [ "montserrat-regular" ],
-				"text-letter-spacing": 0.2,
+				"text-font": [ "montserrat-semibold" ],
+				"text-letter-spacing": 0.3,
 				"symbol-placement": "line",
 				"text-anchor": "center",
 				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 10, 20, 20 ]

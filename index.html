@@ -182,7 +182,7 @@
 
             // Create the services header with toggle
             const header = container.querySelector('h2');
-            header.innerHTML = 'Filters <span class="toggle-icon">[+]</span>';
+            header.innerHTML = 'Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span>';
             header.style.cursor = 'pointer'; // Make it clickable
 
             // Create options container (initially hidden)
@@ -215,7 +215,7 @@
             header.addEventListener('click', () => {
                 optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none';
                 const icon = header.querySelector('.toggle-icon');
-                icon.textContent = optionsContainer.style.display === 'none' ? '[+]' : '[-]';
+                icon.innerHTML = optionsContainer.style.display === 'none' ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>';
             });
 
             // Start collapsed
