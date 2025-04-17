@@ -17,7 +17,7 @@
 			"id": "background",
 			"type": "background",
 			"paint": {
-				"background-color": "hsl(0, 20%, 93%)"
+				"background-color": "hsl(0, 20%, 97%)"
 			}
 		},
 		{
@@ -56,7 +56,7 @@
 			"type": "fill",
 			"source-layer": "buildings",
 			"paint": {
-				"fill-color": "hsl(42, 35%, 87%)",
+				"fill-color": "hsl(42, 35%, 90%)",
 				"fill-opacity": { "stops": [ [ 14, 0 ], [ 15, 1 ] ] }
 			}
 		},
@@ -124,8 +124,8 @@
 			},
 			"paint": {
 				"icon-opacity": { "stops": [ [ 13, 0 ], [ 14, 1] ] },
-				"icon-color": "hsl(0, 0%, 60%)",
-				"text-color": "hsl(0, 0%, 60%)"
+				"icon-color": "hsl(0, 0%, 40%)",
+				"text-color": "hsl(0, 0%, 40%)"
 			}
 		},
 		{
@@ -145,7 +145,7 @@
 				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 0, 20, 20 ]
 			},
 			"paint": {
-				"text-color": "hsl(0, 0%, 40%)"
+				"text-color": "hsl(0, 0%, 20%)"
 			}
 		},
 		{
@@ -164,7 +164,7 @@
 				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 10, 20, 20 ]
 			},
 			"paint": {
-				"text-color": "hsl(0, 0%, 40%)"
+				"text-color": "hsl(0, 0%, 20%)"
 			}
 		}
 	]
