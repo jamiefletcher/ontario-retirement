@@ -17,7 +17,7 @@
 			"id": "background",
 			"type": "background",
 			"paint": {
-				"background-color": "hsl(0, 20%, 97%)"
+				"background-color": "hsl(0, 20%, 95%)"
 			}
 		},
 		{
@@ -26,7 +26,7 @@
 			"type": "fill",
 			"source-layer": "ocean",
 			"paint": {
-				"fill-color": "hsl(199, 78%, 90%)"
+				"fill-color": "hsl(199, 78%, 80%)"
 			}
 		},
 		{
@@ -35,7 +35,7 @@
 			"type": "fill",
 			"source-layer": "water_polygons",
 			"paint": {
-				"fill-color": "hsl(199, 78%, 90%)",
+				"fill-color": "hsl(199, 78%, 80%)",
 				"fill-opacity": { "stops": [ [ 4, 0 ], [ 6, 1 ] ] }
 			}
 		},
@@ -46,7 +46,7 @@
 			"source-layer": "land",
 			"filter": [ "in", "kind", "park", "village_green", "recreation_ground" ],
 				"paint": {
-				"fill-color": "hsl(110, 60%, 90%)",
+				"fill-color": "hsl(110, 60%, 80%)",
 			  	"fill-opacity": 1
 			}
 		},
@@ -56,7 +56,7 @@
 			"type": "fill",
 			"source-layer": "buildings",
 			"paint": {
-				"fill-color": "hsl(42, 35%, 92%)",
+				"fill-color": "hsl(42, 35%, 90%)",
 				"fill-opacity": { "stops": [ [ 14, 0 ], [ 15, 1 ] ] }
 			}
 		},
@@ -70,7 +70,7 @@
 				"line-cap": "round"
 			},
 			"paint": {
-				"line-color": "hsl(224, 26%, 85%)",
+				"line-color": "hsl(224, 26%, 80%)",
 				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 1, 20, 4 ],
 				"line-dasharray": { "stops": [ [ 10, [2, 2] ], [ 16, [4, 4] ] ] }
 			},
@@ -83,7 +83,7 @@
 			"source-layer": "streets",
 			"filter": [ "in", "kind", "residential" ],
 			"paint": {
-				"line-color": "hsl(0, 5%, 93%)",
+				"line-color": "hsl(0, 5%, 90%)",
 				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 0, 20, 92 ]
 			},
 			"layout": {
@@ -98,7 +98,7 @@
 			"source-layer": "streets",
 			"filter": [ "in", "kind", "motorway", "trunk", "primary", "secondary", "tertiary" ],
 			"paint": {
-				"line-color": "hsl(224, 26%, 90%)",
+				"line-color": "hsl(224, 26%, 85%)",
 				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 0, 20, 152 ]
 			},
 			"layout": {
