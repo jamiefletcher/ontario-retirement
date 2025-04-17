@@ -6,8 +6,8 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <link href="assets/fontawesome/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    <link href="lib/maplibre-gl.css" rel="stylesheet" />
-    <script src="lib/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.js"></script>
     <style>
         * {
             color: hsl(0, 0%, 20%);
@@ -276,7 +276,7 @@
                         source: 'points',
                         paint: {
                             'circle-radius': 50,
-                            'circle-color': 'hsl(20, 50%, 50%)',
+                            'circle-color': 'hsl(26, 100%, 57%)',
                             'circle-opacity': 0.2,
                         },
                         minzoom: 13
@@ -287,8 +287,8 @@
                         type: 'circle',
                         source: 'points',
                         paint: {
-                            'circle-radius': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 10 ],
-                            'circle-color': 'hsl(20, 50%, 50%)',
+                            'circle-color': 'hsl(26, 100%, 57%)',
+                            'circle-radius': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 2, 20, 10 ],
                             'circle-stroke-width': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 2 ],
                             'circle-stroke-color': 'hsl(0, 0%, 100%)'
                         }
