@@ -292,7 +292,7 @@
                             'circle-stroke-width': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 2 ],
                             'circle-stroke-color': 'hsl(0, 0%, 100%)'
                         }
-                    });
+                    }, 'label-city');
 
                     map.on('click', 'points', (e) => {
                         const properties = e.features[0].properties;

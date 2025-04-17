@@ -57,7 +57,7 @@
 			"source-layer": "buildings",
 			"paint": {
 				"fill-color": "hsl(42, 35%, 90%)",
-				"fill-opacity": { "stops": [ [ 14, 0 ], [ 15, 1 ] ] }
+				"fill-opacity": [ "interpolate", [ "linear" ], [ "zoom" ], 14, 0, 15, 1 ]
 			}
 		},
 		{
@@ -107,16 +107,6 @@
 			}
 		},
 		{
-			"id": "neighborhood-boundaries",
-			"type": "line",
-			"source": "osm",
-			"source-layer": "boundaries",
-			"paint": {
-			  "line-color": "#ff6600",
-			  "line-width": 10
-			}
-		},
-		{
 			"source": "osm",
 			"id": "pois",
 			"type": "symbol",
@@ -133,9 +123,11 @@
 				"icon-image": [ "match", [ "get", "amenity" ], "arts_centre", "icon-art_gallery", "atm", "icon-atm", "bank", "icon-bank", "bar", "icon-bar", "bench", "icon-bench", "bicycle_rental", "icon-bicycle_share", "biergarten", "icon-beergarden", "cafe", "icon-cafe", "car_rental", "icon-car_rental", "car_sharing", "icon-car_rental", "car_wash", "icon-car_wash", "cinema", "icon-cinema", "college", "icon-college", "community_centre", "icon-community", "dentist", "icon-dentist", "doctors", "icon-doctor", "dog_park", "icon-dog_park", "drinking_water", "icon-drinking_water", "embassy", "icon-embassy", "fast_food", "icon-fast_food", "fire_station", "icon-fire_station", "fountain", "icon-fountain", "grave_yard", "icon-cemetery", "hospital", "icon-hospital", "hunting_stand", "icon-huntingstand", "library", "icon-library", "marketplace", "icon-marketplace", "nightclub", "icon-nightclub", "nursing_home", "icon-nursinghome", "pharmacy", "icon-pharmacy", "place_of_worship", "icon-place_of_worship", "playground", "icon-playground", "police", "icon-police", "post_box", "icon-postbox", "post_office", "icon-post", "prison", "icon-prison", "pub", "icon-beer", "recycling", "icon-recycling", "restaurant", "icon-restaurant", "school", "icon-school", "shelter", "icon-shelter", "telephone", "icon-telephone", "theatre", "icon-theatre", "toilets", "icon-toilet", "townhall", "icon-town_hall", "vending_machine", "icon-vendingmachine", "veterinary", "icon-veterinary", "waste_basket", "icon-waste_basket", "golf_course", "icon-golf", "ice_rink", "icon-icerink", "pitch", "icon-pitch", "stadium", "icon-stadium", "swimming_pool", "icon-swimming", "water_park", "icon-waterpark", "chalet", "icon-chalet", "information", "transport-information", "picnic_site", "icon-picnic_site", "viewpoint", "icon-viewpoint", "zoo", "icon-zoo", "alcohol", "icon-alcohol_shop", "bakery", "icon-bakery", "beauty", "icon-beauty", "beverages", "icon-beverages", "books", "icon-books", "butcher", "icon-butcher", "chemist", "icon-chemist", "clothes", "icon-clothes", "doityourself", "icon-doityourself", "dry_cleaning", "icon-drycleaning", "florist", "icon-florist", "furniture", "icon-furniture", "garden_centre", "icon-garden_centre", "general", "icon-shop", "gift", "icon-gift", "greengrocer", "icon-greengrocer", "hairdresser", "icon-hairdresser", "hardware", "icon-hardware", "jewelry", "icon-jewelry_store", "kiosk", "icon-kiosk", "laundry", "icon-laundry", "newsagent", "icon-newsagent", "optican", "icon-optician", "outdoor", "icon-outdoor", "shoes", "icon-shoes", "sports", "icon-sports", "stationery", "icon-stationery", "toys", "icon-toys", "travel_agency", "icon-travel_agent", "video", "icon-video", "lighthouse", "icon-lighthouse", "surveillance", "icon-surveillance", "tower", "icon-observation_tower", "watermill", "icon-watermill", "windmill", "icon-windmill", "artwork", "icon-artwork", "castle", "icon-castle", "monument", "icon-monument", "wayside_shrine", "icon-shrine", "defibrillator", "icon-defibrillator", "fire_hydrant", "icon-hydrant", "phone", "icon-emergency_phone", "unknown" ]
 			},
 			"paint": {
-				"icon-opacity": { "stops": [ [ 13, 0 ], [ 14, 1] ] },
+
 				"icon-color": "hsl(0, 0%, 20%)",
-				"text-color": "hsl(0, 0%, 20%)"
+				"text-color": "hsl(0, 0%, 20%)",
+				"icon-opacity": [ "interpolate", [ "linear" ], [ "zoom" ], 14, 0, 15, 1 ],
+				"text-opacity": [ "interpolate", [ "linear" ], [ "zoom" ], 14, 0, 15, 1 ]
 			}
 		},
 		{
@@ -179,19 +171,38 @@
 		},
 		{
 			"source": "osm",
-			"id": "label-place",
+			"id": "label-neighbourhood",
 			"type": "symbol",
 			"source-layer": "place_labels",
 			"filter": [ "in", "kind", "neighbourhood", "quarter", "suburb" ],
 			"layout": {
 				"text-field": "{name}",
 				"text-font": [ "montserrat-regular" ],
-				"text-size": { "stops": [ [ 14, 12 ] ] },
+				"text-size": 10,
 				"text-transform": "uppercase"
 			},
 			"paint": {
 				"text-color": "hsl(0, 0%, 20%)"
-			}
+			},
+			"minzoom": 10
+		},
+		{
+			"source": "osm",
+			"id": "label-city",
+			"type": "symbol",
+			"source-layer": "place_labels",
+			"filter": [ "in", "kind", "city", "town", "village", "capital"  , "state_capital" ],
+			"layout": {
+				"text-field": "{name}",
+				"text-transform": "uppercase",
+				"text-font": [ "montserrat-semibold" ],
+				"text-letter-spacing": 0.1,
+				"text-size": 10
+			},
+			"paint": {
+				"text-color": "hsl(0, 0%, 20%)"
+			},
+			"maxzoom": 10
 		}
 	]
 }
