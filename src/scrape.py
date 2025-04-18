@@ -9,6 +9,7 @@ from utils import ascii_only, clean_string, load_json, save_geojson, save_json, 
 
 REGISTER_FILE = "data/rhra_register.json"
 CORRECTIONS_FILE = "data/corrections.json"
+GEOJSON_FILE = "data/homes.geojson"
 
 class Registery:
     registry_url = (
@@ -206,13 +207,14 @@ class Extractor:
     def _proceedings(root: BeautifulSoup) -> Dict[str, Any]:
         return Extractor._reports(root, key="proceedings")
 
+
 def main():
     registry = Registery(REGISTER_FILE)
     registry.scrape_details()
-    registry.save_json(REGISTER_FILE)
     registry.load_json(CORRECTIONS_FILE)
+    registry.save_json(REGISTER_FILE)
     registry.filter_status(keep=["Issued", "Application Received", "Issued with conditions"])
-    registry.save_geojson("Ontario Retirement Homes", "data/homes.geojson")
+    registry.save_geojson("Ontario Retirement Homes", GEOJSON_FILE)
     print(len(registry.residences))
 
 
