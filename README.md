@@ -14,7 +14,7 @@ We provide the dataset in two formats:
 
 ### Services
 
-The RHRA tracks 13 different services that are offered by private retirement homes. While many of these services are commonly offered (e.g. provision of meals, assistance with personal hygiene), other services are offered by relatively few homes (e.g. dementia care, skin and wound care).
+The dataset tracks 13 categories of services that are offered by private retirement homes. While many of these services are commonly offered (e.g. provision of meals, assistance with personal hygiene), other services are offered by relatively few homes (e.g. dementia care, skin and wound care).
 
 - Assistance with bathing
 - Assistance with personal hygiene
@@ -32,8 +32,8 @@ The RHRA tracks 13 different services that are offered by private retirement hom
 
 ### Enforcement
 
-The RHRA takes various enforcement actions to ensure safety of retirement home residents. When selecting an appropriate home, it is useful to be aware of the regulatory status of retirement homes under consideration.
+When selecting retirement home, it is useful to be aware of the regulatory status of any homes under consideration. Various regulatory enforcement actions may be taken to ensure safety of retirement home residents.
 
-- License status: `Issued` vs `Issued with conditions`. By imposing conditions on a facility's license, the RHRA may require the facility to carry out specific mandatory actions to ensure it is properly caring for its residents.
-- Orders. Even if conditions are not imposed on the license, the RHRA may order the facility to carry out specific mandatory actions to ensure the facility is properly caring for its residents.
-- Inspection type: `Report` vs `Mandatory Report`. The RHRA completes regular inspections of facilities on three-year interval. However, if the RHRA receives complaints about a facility, it will complete a mandatory inspection.
+- **License status**: `Issued` vs `Issued with conditions`. Conditions placed directly on a facility's license may require the home to carry out specific mandatory actions to ensure proper care for the residents.
+- **Orders**. Even if conditions are not imposed on the license, a facility may be ordered to carry out specific mandatory actions to ensure proper care for the residents.
+- **Inspection type**: `Report` vs `Mandatory Report`. The RHRA completes regular inspections of facilities on a three-year interval. However, if complaints are received about a home, a mandatory inspection will be completed.
