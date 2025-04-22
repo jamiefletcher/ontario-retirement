@@ -146,6 +146,49 @@
             max-width: 175px;
         }
 
+        /* Search box styling */
+        .search-container {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 300px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        #search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            border-top: 1px solid #eee;
+        }
+        
+        .search-result {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-result:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .search-result:last-child {
+            border-bottom: none;
+        }
+
     </style>
 </head>
 <body>
@@ -155,6 +198,10 @@
             <h2>Filters</h2>
             <!-- Filters will be added here dynamically -->
         </div>
+    </div>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for a home ..." />
+        <div id="search-results"></div>
     </div>
     <script>
         const pointsFile = 'data/homes.geojson'
@@ -295,48 +342,8 @@
                     }, 'label-city');
 
                     map.on('click', 'points', (e) => {
-                        const properties = e.features[0].properties;
-                        const geometry = e.features[0].geometry;
-                        const searchQuery = encodeURIComponent(`${properties.name} ${properties.streetaddress}`);
-
-                        // Parse services JSON if it's a string
-                        const services = typeof properties.services === 'string'
-                            ? JSON.parse(properties.services)
-                            : properties.services;
-
-                        // Build services HTML
-                        let servicesHTML = '';
-                        for (const [service, available] of Object.entries(services)) {
-                            servicesHTML += `
-                                <div class="service-item">
-                                    <span>${available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'} ${service}</span>
-                                </div>
-                            `;
-                        }
-
-                        const html = `
-                            <div class="popup-container">
-                                
-                                <h2>${properties.name}</h2>
-
-                                <div class="contact-info">
-                                    <div><i class="fa-solid fa-location-dot"></i><a href="https://www.google.com/maps/search/?api=1&query=${searchQuery}" target="_blank">${properties.streetaddress}</a></div>
-                                    <div><i class="fa-solid fa-phone"></i><a href="tel:${properties.phone_number}">${properties.phone_number}</a></div>
-                                    <div><i class="fa-solid fa-globe"></i><a href="${properties.web_address}" class="ellipsis target="_blank">${properties.web_address}</a></div>
-                                </div>
-
-                                <div class="capacity">${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</div>
-
-                                <div class="services-grid">
-                                    ${servicesHTML}
-                                </div>
-                            </div>
-                        `;
-
-                        new maplibregl.Popup()
-                            .setLngLat(geometry.coordinates)
-                            .setHTML(html)
-                            .addTo(map);
+                        const feature = e.features[0];
+                        createPopup(feature);
                     });
 
                     map.on('mouseenter', 'points', () => {
@@ -346,6 +353,121 @@
                         map.getCanvas().style.cursor = '';
                     });
                 });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            if (searchTerm.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const matches = allFeatures.filter(feature => 
+                feature.properties.name.toLowerCase().includes(searchTerm)
+            );
+            
+            displaySearchResults(matches);
+        });
+        
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result">No matches found</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            
+            results.forEach(feature => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'search-result';
+                resultElement.textContent = feature.properties.name;
+                
+                resultElement.addEventListener('click', () => {
+                    zoomToFeature(feature);
+                    createPopup(feature);
+                    searchResults.style.display = 'none';
+                    searchInput.value = feature.properties.name;
+                });
+                
+                searchResults.appendChild(resultElement);
+            });
+            
+            searchResults.style.display = 'block';
+        }
+        
+        function createPopup(feature) {
+            const properties = feature.properties;
+            const geometry = feature.geometry;
+            const searchQuery = encodeURIComponent(`${properties.name} ${properties.streetaddress}`);
+
+            // Parse services JSON if it's a string
+            const services = typeof properties.services === 'string'
+                ? JSON.parse(properties.services)
+                : properties.services;
+
+            // Build services HTML
+            let servicesHTML = '';
+            for (const [service, available] of Object.entries(services)) {
+                servicesHTML += `
+                    <div class="service-item">
+                        <span>${available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'} ${service}</span>
+                    </div>
+                `;
+            }
+
+            const html = `
+                <div class="popup-container">
+                    
+                    <h2>${properties.name}</h2>
+
+                    <div class="contact-info">
+                        <div><i class="fa-solid fa-location-dot"></i><a href="https://www.google.com/maps/search/?api=1&query=${searchQuery}" target="_blank">${properties.streetaddress}</a></div>
+                        <div><i class="fa-solid fa-phone"></i><a href="tel:${properties.phone_number}">${properties.phone_number}</a></div>
+                        <div><i class="fa-solid fa-globe"></i><a href="${properties.web_address}" class="ellipsis target="_blank">${properties.web_address}</a></div>
+                    </div>
+
+                    <div class="capacity">${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</div>
+
+                    <div class="services-grid">
+                        ${servicesHTML}
+                    </div>
+                </div>
+            `;
+
+            new maplibregl.Popup()
+                .setLngLat(geometry.coordinates)
+                .setHTML(html)
+                .addTo(map);
+        }
+
+        function zoomToFeature(feature) {
+            map.flyTo({
+                center: feature.geometry.coordinates,
+                zoom: 16,
+                essential: true
+            });            
+        }
+        
+        // Close search results when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        map.on('click', (e) => {
+            const features = map.queryRenderedFeatures(e.point);
+            if (features.length > 0) {
+                console.log('Clicked feature:', features[0].properties);
+            } else {
+                console.log('No features at this location');
+            }
         });
     </script>
 </body>
