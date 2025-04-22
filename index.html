@@ -88,7 +88,7 @@
             background: white;
             padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 1px 2px hsla(0,0%,0%,.1);
+            box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -156,9 +156,9 @@
             width: 300px;
             background: white;
             border-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
-        
+
         #search-input {
             width: 100%;
             padding: 10px;
@@ -167,30 +167,30 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-        
+
         #search-results {
             max-height: 300px;
             overflow-y: auto;
             display: none;
             border-top: 1px solid #eee;
         }
-        
+
         .search-result {
             padding: 8px 10px;
             cursor: pointer;
             border-bottom: 1px solid #eee;
         }
-        
+
         .search-result:hover {
             background-color: #f5f5f5;
         }
-        
+
         .search-result:last-child {
             border-bottom: none;
         }
-
     </style>
 </head>
+
 <body>
     <div id='map'></div>
     <div id='filter-ui'>
@@ -204,97 +204,89 @@
         <div id="search-results"></div>
     </div>
     <script>
-        const pointsFile = 'data/homes.geojson'
-        const styleFile = 'style.json'
-        const map = new maplibregl.Map({
-            container: 'map',
-            style: styleFile,
-            hash: true,
-            pixelRatio: 1,
-            center: [-79.45, 43.75],
-            zoom: 11,
-            minZoom: 5,
-            maxZoom: 18
-        });
-
-        let allFeatures = [];
-
-        function createServiceFilters() {
-            const container = document.getElementById('service-filters');
-            const services = [
-                "Bathing", "Hygiene", "Walking", "Feeding", 
+        // Configuration
+        const CONFIG = {
+            pointsFile: 'data/homes.geojson',
+            styleFile: 'style.json',
+            services: [
+                "Bathing", "Hygiene", "Walking", "Feeding",
                 "Wounds", "Continence", "Drugs", "Meals",
                 "Dementia", "Dressing", "Pharmacist", "Doctor", "Nurse"
-            ];
+            ],
+            mapOptions: {
+                container: 'map',
+                style: 'style.json',
+                hash: true,
+                pixelRatio: 1,
+                center: [-79.45, 43.75],
+                zoom: 11,
+                minZoom: 5,
+                maxZoom: 18
+            }
+        };
 
-            // Create the services header with toggle
-            const header = container.querySelector('h2');
+        // DOM Elements
+        const dom = {
+            mapContainer: document.getElementById('map'),
+            filterUi: document.getElementById('filter-ui'),
+            serviceFilters: document.getElementById('service-filters'),
+            searchInput: document.getElementById('search-input'),
+            searchResults: document.getElementById('search-results')
+        };
+
+        // State
+        let allFeatures = [];
+        const map = new maplibregl.Map(CONFIG.mapOptions);
+
+        // Filters
+        function createServiceFilters() {
+            const { serviceFilters } = dom;
+            const { services } = CONFIG;
+
+            const header = serviceFilters.querySelector('h2');
             header.innerHTML = 'Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span>';
-            header.style.cursor = 'pointer'; // Make it clickable
+            header.style.cursor = 'pointer';
 
-            // Create options container (initially hidden)
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'filter-options';
-            
-            services.forEach(service => {
-                const option = document.createElement('div');
-                option.className = 'filter-option';
 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `filter-${service}`;
-                checkbox.value = service;
-                checkbox.checked = false;
-                checkbox.addEventListener('change', updateFilteredData);
+            // Create all options at once
+            optionsContainer.innerHTML = services.map(service => `
+                <div class="filter-option">
+                <label>
+                    <input type="checkbox" id="filter-${service}" value="${service}">
+                    ${service}
+                </label>
+                </div>
+            `).join('');
 
-                const label = document.createElement('label');
-                label.htmlFor = `filter-${service}`;
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(service));
+            // Event delegation for checkboxes
+            optionsContainer.addEventListener('change', updateFilteredData);
 
-                option.appendChild(label);
-                optionsContainer.appendChild(option);
-            });
-
-            container.appendChild(optionsContainer);
-
-            // Toggle functionality
             header.addEventListener('click', () => {
-                optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none';
-                const icon = header.querySelector('.toggle-icon');
-                icon.innerHTML = optionsContainer.style.display === 'none' ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>';
+                const isHidden = optionsContainer.style.display === 'none';
+                optionsContainer.style.display = isHidden ? 'flex' : 'none';
+                header.querySelector('.toggle-icon').innerHTML = isHidden
+                    ? '<i class="fas fa-caret-up"></i>'
+                    : '<i class="fas fa-caret-down"></i>';
             });
 
-            // Start collapsed
             optionsContainer.style.display = 'none';
-            container.appendChild(optionsContainer);
+            serviceFilters.appendChild(optionsContainer);
         }
 
         function updateFilteredData() {
-            const checkboxes = document.querySelectorAll('#service-filters input[type="checkbox"]');
-            const activeFilters = [];
+            const checkboxes = document.querySelectorAll('#service-filters input[type="checkbox"]:checked');
+            const activeFilters = Array.from(checkboxes).map(cb => cb.value);
 
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    activeFilters.push(checkbox.value);
-                }
-            });
-
-            if (activeFilters.length === 0) {
-                const allGeoJSON = {
-                    type: 'FeatureCollection',
-                    features: allFeatures
-                };
-                map.getSource('points').setData(allGeoJSON);
-                return;
-            }
-
-            const filteredFeatures = allFeatures.filter(feature => {
-                if (!feature.properties.services) return false;
-                return activeFilters.every(service =>
-                    feature.properties.services[service] === true
-                );
-            });
+            const filteredFeatures = activeFilters.length === 0
+                ? allFeatures
+                : allFeatures.filter(feature => {
+                    if (!feature.properties.services) return false;
+                    return activeFilters.every(service =>
+                        feature.properties.services[service] === true
+                    );
+                });
 
             map.getSource('points').setData({
                 type: 'FeatureCollection',
@@ -302,11 +294,162 @@
             });
         }
 
-        // Initialize filters
+        // Search
+        function handleSearch() {
+            const searchTerm = dom.searchInput.value.toLowerCase();
+
+            if (searchTerm.length < 2) {
+                dom.searchResults.style.display = 'none';
+                return;
+            }
+
+            const matches = allFeatures.filter(feature =>
+                feature.properties.name.toLowerCase().includes(searchTerm)
+            );
+
+            displaySearchResults(matches);
+        }
+
+        function displaySearchResults(results) {
+            dom.searchResults.innerHTML = '';
+
+            if (!results.length) {
+                dom.searchResults.innerHTML = '<div class="search-result">No matches found</div>';
+                dom.searchResults.style.display = 'block';
+                return;
+            }
+
+            // Using map() + join() instead of creating elements individually
+            dom.searchResults.innerHTML = results.map(feature => `
+                <div class="search-result" data-feature-id="${feature.id || feature.properties.name}">
+                ${feature.properties.name}
+                </div>
+            `).join('');
+
+            // Event delegation for better performance
+            dom.searchResults.addEventListener('click', (e) => {
+                const resultElement = e.target.closest('.search-result');
+                if (!resultElement) return;
+
+                const feature = results.find(f =>
+                    (f.id || f.properties.name) === resultElement.dataset.featureId
+                );
+
+                if (feature) {
+                    zoomToFeature(feature);
+                    createPopup(feature);
+                    dom.searchResults.style.display = 'none';
+                    dom.searchInput.value = '';
+                }
+            });
+
+            dom.searchResults.style.display = 'block';
+        }
+
+        // Popups
+        function createPopup(feature) {
+            const { properties, geometry } = feature;
+            const searchQuery = encodeURIComponent(`${properties.name} ${properties.streetaddress}`);
+            const services = parseServices(properties.services);
+
+            new maplibregl.Popup()
+                .setLngLat(geometry.coordinates)
+                .setHTML(`
+                <div class="popup-container">
+                    <h2>${properties.name}</h2>
+                    ${createContactInfo(properties, searchQuery)}
+                    ${createCapacityInfo(properties)}
+                    ${createServicesGrid(services)}
+                </div>
+                `)
+                .addTo(map);
+        }
+
+        // Helper Functions
+        function parseServices(services) {
+            if (!services) return {};
+            return typeof services === 'string' ? JSON.parse(services) : services;
+        }
+
+        function createContactInfo(properties, searchQuery) {
+            return `
+                <div class="contact-info">
+                <div>
+                    <i class="fa-solid fa-location-dot"></i>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${searchQuery}" target="_blank">
+                    ${properties.streetaddress}
+                    </a>
+                </div>
+                ${properties.phone_number ? `
+                    <div>
+                    <i class="fa-solid fa-phone"></i>
+                    <a href="tel:${properties.phone_number}">${properties.phone_number}</a>
+                    </div>
+                ` : ''}
+                ${properties.web_address ? `
+                    <div>
+                    <i class="fa-solid fa-globe"></i>
+                    <a href="${formatUrl(properties.web_address)}" class="ellipsis" target="_blank">
+                        ${properties.web_address}
+                    </a>
+                    </div>
+                ` : ''}
+                </div>
+            `;
+        }
+
+        function formatUrl(url) {
+            return url.startsWith('http') ? url : `https://${url}`;
+        }
+
+        function createCapacityInfo(properties) {
+            return properties.number_of_suites || properties.resident_capacity ? `
+                <div class="capacity">
+                ${properties.number_of_suites ? `${properties.number_of_suites} rooms` : ''}
+                ${properties.number_of_suites && properties.resident_capacity ? ' / ' : ''}
+                ${properties.resident_capacity ? `${properties.resident_capacity} beds` : ''}
+                </div>
+            ` : '';
+        }
+
+        function createServicesGrid(services) {
+            if (!services || !Object.keys(services).length) return '';
+
+            return `
+                <div class="services-grid">
+                ${Object.entries(services).map(([service, available]) => `
+                    <div class="service-item">
+                    <span>
+                        ${available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'}
+                        ${service}
+                    </span>
+                    </div>
+                `).join('')}
+                </div>
+            `;
+        }
+
+        function zoomToFeature(feature) {
+            map.flyTo({
+                center: feature.geometry.coordinates,
+                zoom: 16,
+                essential: true
+            });
+        }
+
+        // Initialize
         createServiceFilters();
+        dom.searchInput.addEventListener('input', handleSearch);
+
+        // Close search results when clicking elsewhere
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
 
         map.on('load', () => {
-            fetch(pointsFile)
+            fetch(CONFIG.pointsFile)
                 .then(response => response.json())
                 .then(data => {
                     allFeatures = data.features;
@@ -335,8 +478,8 @@
                         source: 'points',
                         paint: {
                             'circle-color': 'hsl(26, 100%, 57%)',
-                            'circle-radius': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 2, 20, 10 ],
-                            'circle-stroke-width': [ "interpolate", [ "linear" ], [ "zoom" ], 5, 1, 20, 2 ],
+                            'circle-radius': ["interpolate", ["linear"], ["zoom"], 5, 2, 20, 10],
+                            'circle-stroke-width': ["interpolate", ["linear"], ["zoom"], 5, 1, 20, 2],
                             'circle-stroke-color': 'hsl(0, 0%, 100%)'
                         }
                     }, 'label-city');
@@ -355,112 +498,6 @@
                 });
         });
 
-        // Search functionality
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            
-            if (searchTerm.length < 2) {
-                searchResults.style.display = 'none';
-                return;
-            }
-            
-            const matches = allFeatures.filter(feature => 
-                feature.properties.name.toLowerCase().includes(searchTerm)
-            );
-            
-            displaySearchResults(matches);
-        });
-        
-        function displaySearchResults(results) {
-            searchResults.innerHTML = '';
-            
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="search-result">No matches found</div>';
-                searchResults.style.display = 'block';
-                return;
-            }
-            
-            results.forEach(feature => {
-                const resultElement = document.createElement('div');
-                resultElement.className = 'search-result';
-                resultElement.textContent = feature.properties.name;
-                
-                resultElement.addEventListener('click', () => {
-                    zoomToFeature(feature);
-                    createPopup(feature);
-                    searchResults.style.display = 'none';
-                    searchInput.value = '';
-                });
-                
-                searchResults.appendChild(resultElement);
-            });
-            
-            searchResults.style.display = 'block';
-        }
-        
-        function createPopup(feature) {
-            const properties = feature.properties;
-            const geometry = feature.geometry;
-            const searchQuery = encodeURIComponent(`${properties.name} ${properties.streetaddress}`);
-
-            // Parse services JSON if it's a string
-            const services = typeof properties.services === 'string'
-                ? JSON.parse(properties.services)
-                : properties.services;
-
-            // Build services HTML
-            let servicesHTML = '';
-            for (const [service, available] of Object.entries(services)) {
-                servicesHTML += `
-                    <div class="service-item">
-                        <span>${available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'} ${service}</span>
-                    </div>
-                `;
-            }
-
-            const html = `
-                <div class="popup-container">
-                    
-                    <h2>${properties.name}</h2>
-
-                    <div class="contact-info">
-                        <div><i class="fa-solid fa-location-dot"></i><a href="https://www.google.com/maps/search/?api=1&query=${searchQuery}" target="_blank">${properties.streetaddress}</a></div>
-                        <div><i class="fa-solid fa-phone"></i><a href="tel:${properties.phone_number}">${properties.phone_number}</a></div>
-                        <div><i class="fa-solid fa-globe"></i><a href="${properties.web_address}" class="ellipsis target="_blank">${properties.web_address}</a></div>
-                    </div>
-
-                    <div class="capacity">${properties.number_of_suites} rooms / ${properties.resident_capacity} beds</div>
-
-                    <div class="services-grid">
-                        ${servicesHTML}
-                    </div>
-                </div>
-            `;
-
-            new maplibregl.Popup()
-                .setLngLat(geometry.coordinates)
-                .setHTML(html)
-                .addTo(map);
-        }
-
-        function zoomToFeature(feature) {
-            map.flyTo({
-                center: feature.geometry.coordinates,
-                zoom: 16,
-                essential: true
-            });            
-        }
-        
-        // Close search results when clicking elsewhere
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-container')) {
-                searchResults.style.display = 'none';
-            }
-        });
-
         map.on('click', (e) => {
             const features = map.queryRenderedFeatures(e.point);
             if (features.length > 0) {
@@ -471,4 +508,5 @@
         });
     </script>
 </body>
+
 </html>
