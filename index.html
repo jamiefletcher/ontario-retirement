@@ -312,38 +312,33 @@
 
         function displaySearchResults(results) {
             dom.searchResults.innerHTML = '';
-
+            dom.searchResults.style.display = 'block';
             if (!results.length) {
                 dom.searchResults.innerHTML = '<div class="search-result">No matches found</div>';
-                dom.searchResults.style.display = 'block';
                 return;
             }
-
-            // Using map() + join() instead of creating elements individually
             dom.searchResults.innerHTML = results.map(feature => `
                 <div class="search-result" data-feature-id="${feature.id || feature.properties.name}">
                 ${feature.properties.name}
                 </div>
             `).join('');
+        }
 
-            // Event delegation for better performance
-            dom.searchResults.addEventListener('click', (e) => {
-                const resultElement = e.target.closest('.search-result');
-                if (!resultElement) return;
+        function handleSearchResultClick(e) {
+            const resultElement = e.target.closest('.search-result');
+            if (!resultElement) return;
 
-                const feature = results.find(f =>
-                    (f.id || f.properties.name) === resultElement.dataset.featureId
-                );
+            const featureId = resultElement.dataset.featureId;
+            const feature = allFeatures.find(f => 
+                (f.id || f.properties.name) === featureId
+            );
 
-                if (feature) {
-                    zoomToFeature(feature);
-                    createPopup(feature);
-                    dom.searchResults.style.display = 'none';
-                    dom.searchInput.value = '';
-                }
-            });
-
-            dom.searchResults.style.display = 'block';
+            if (feature) {
+                zoomToFeature(feature);
+                createPopup(feature);
+                dom.searchResults.style.display = 'none';
+                dom.searchInput.value = '';
+            }
         }
 
         // Popups
@@ -439,12 +434,14 @@
 
         // Initialize
         createServiceFilters();
+
         dom.searchInput.addEventListener('input', handleSearch);
+        dom.searchResults.addEventListener('click', handleSearchResultClick);
 
         // Close search results when clicking elsewhere
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-container')) {
-                searchResults.style.display = 'none';
+                dom.searchResults.style.display = 'none';
             }
         });
 
