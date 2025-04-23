@@ -43,12 +43,11 @@
 		},
 		{
 			"source": "osm",
-			"id": "water-polygons-small",
+			"id": "water-polygons",
 			"type": "fill",
 			"source-layer": "water_polygons",
 			"paint": {
-				"fill-color": "hsl(199, 78%, 80%)",
-				"fill-opacity": { "stops": [ [ 8, 0 ], [ 9, 1 ] ] }
+				"fill-color": "hsl(199, 78%, 80%)"
 			},
 			"minzoom": 8
 		},
