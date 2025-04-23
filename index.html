@@ -21,6 +21,29 @@
             padding: 0;
         }
 
+        a {
+            color: hsl(200, 50%, 40%);
+            text-decoration: none !important;
+            border: none;
+            outline: none;
+        }
+
+        h2 {
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2rem;
+        }
+
+        .ellipsis {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 175px;
+        }
+
         #map {
             position: absolute;
             top: 0;
@@ -28,6 +51,7 @@
             width: 100%;
         }
 
+        /* Popup Styling */
         .popup-container {
             max-width: 300px;
         }
@@ -80,15 +104,33 @@
             font-size: 12px;
         }
 
-        #filter-ui {
+        /* Search-Filter Styling */
+        .search-filter-ui {
             position: absolute;
+            display: flex;
+            flex-direction: row;
             top: 10px;
-            left: 10px;
+            left: 50%;
+            gap: 5px;
+            transform: translateX(-50%);
             z-index: 1000;
+        }
+
+        .search-container {
+            width: 360px;
+            background: white;
+            border-radius: 5px;
+            height: min-content;
+            box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
+        }
+
+        .filter-container {
             background: white;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
+            width: 130px;
+            height: min-content;
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -96,6 +138,10 @@
         #service-filters {
             display: flex;
             flex-direction: column;
+        }
+
+        #service-filters h2 {
+            cursor: pointer;
         }
 
         .filter-options {
@@ -121,42 +167,6 @@
         .toggle-icon {
             font-weight: normal;
             margin-left: 5px;
-        }
-
-        a {
-            color: hsl(200, 50%, 40%);
-            text-decoration: none !important;
-            border: none;
-            outline: none;
-        }
-
-        h2 {
-            padding: 0;
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.2rem;
-        }
-
-        .ellipsis {
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 175px;
-        }
-
-        /* Search box styling */
-        .search-container {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: 300px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         #search-input {
@@ -193,15 +203,18 @@
 
 <body>
     <div id='map'></div>
-    <div id='filter-ui'>
-        <div id='service-filters'>
-            <h2>Filters</h2>
-            <!-- Filters will be added here dynamically -->
+    <div class='search-filter-ui'>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for a home ..." />
+            <div id="search-results"></div>
         </div>
-    </div>
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search for a home ..." />
-        <div id="search-results"></div>
+        <div class='filter-container'>
+            <div id='service-filters'>
+                <h2>Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span></h2>
+                <!-- <div class='filter-options'></div> -->
+                <!-- Filters are added here dynamically -->
+            </div>
+        </div>
     </div>
     <script>
         // Configuration
@@ -228,7 +241,6 @@
         // DOM Elements
         const dom = {
             mapContainer: document.getElementById('map'),
-            filterUi: document.getElementById('filter-ui'),
             serviceFilters: document.getElementById('service-filters'),
             searchInput: document.getElementById('search-input'),
             searchResults: document.getElementById('search-results')
@@ -244,8 +256,7 @@
             const { services } = CONFIG;
 
             const header = serviceFilters.querySelector('h2');
-            header.innerHTML = 'Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span>';
-            header.style.cursor = 'pointer';
+            // const optionsContainer = serviceFilters.getElementsByClassName('filter-options');
 
             const optionsContainer = document.createElement('div');
             optionsContainer.className = 'filter-options';
@@ -443,6 +454,9 @@
             if (!e.target.closest('.search-container')) {
                 dom.searchResults.style.display = 'none';
             }
+            // if (!e.target.closest('.filter-options')) {
+            //     dom.serviceFilters.style.display = 'none';
+            // }
         });
 
         map.on('load', () => {
