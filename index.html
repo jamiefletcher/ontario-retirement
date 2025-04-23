@@ -140,11 +140,11 @@
             flex-direction: column;
         }
 
-        #service-filters h2 {
+        #filter-header {
             cursor: pointer;
         }
 
-        .filter-options {
+        #filter-options {
             display: none; /* Start hidden */
             flex-direction: column;
         }
@@ -210,9 +210,8 @@
         </div>
         <div class='filter-container'>
             <div id='service-filters'>
-                <h2>Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span></h2>
-                <!-- <div class='filter-options'></div> -->
-                <!-- Filters are added here dynamically -->
+                <h2 id='filter-header'>Filters <span class="toggle-icon"><i class="fas fa-caret-down"></i></span></h2>
+                <div id='filter-options'></div>
             </div>
         </div>
     </div>
@@ -241,9 +240,10 @@
         // DOM Elements
         const dom = {
             mapContainer: document.getElementById('map'),
-            serviceFilters: document.getElementById('service-filters'),
             searchInput: document.getElementById('search-input'),
-            searchResults: document.getElementById('search-results')
+            searchResults: document.getElementById('search-results'),
+            filterHeader: document.getElementById('filter-header'),
+            filterOptions: document.getElementById('filter-options')
         };
 
         // State
@@ -252,38 +252,26 @@
 
         // Filters
         function createServiceFilters() {
-            const { serviceFilters } = dom;
+            const { filterOptions } = dom;
             const { services } = CONFIG;
 
-            const header = serviceFilters.querySelector('h2');
-            // const optionsContainer = serviceFilters.getElementsByClassName('filter-options');
-
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'filter-options';
-
-            // Create all options at once
-            optionsContainer.innerHTML = services.map(service => `
+            filterOptions.innerHTML = services.map(service => `
                 <div class="filter-option">
                 <label>
                     <input type="checkbox" id="filter-${service}" value="${service}">
                     ${service}
                 </label>
                 </div>
-            `).join('');
+            `).join('');            
+        }
 
-            // Event delegation for checkboxes
-            optionsContainer.addEventListener('change', updateFilteredData);
-
-            header.addEventListener('click', () => {
-                const isHidden = optionsContainer.style.display === 'none';
-                optionsContainer.style.display = isHidden ? 'flex' : 'none';
-                header.querySelector('.toggle-icon').innerHTML = isHidden
-                    ? '<i class="fas fa-caret-up"></i>'
-                    : '<i class="fas fa-caret-down"></i>';
-            });
-
-            optionsContainer.style.display = 'none';
-            serviceFilters.appendChild(optionsContainer);
+        function handleFilterHeaderClick() {
+            const { filterHeader, filterOptions } = dom;
+            const isHidden = filterOptions.style.display === 'none';
+            filterOptions.style.display = isHidden ? 'flex' : 'none';
+            filterHeader.querySelector('.toggle-icon').innerHTML = isHidden
+                ? '<i class="fas fa-caret-up"></i>'
+                : '<i class="fas fa-caret-down"></i>';
         }
 
         function updateFilteredData() {
@@ -445,17 +433,18 @@
 
         // Initialize
         createServiceFilters();
-
         dom.searchInput.addEventListener('input', handleSearch);
         dom.searchResults.addEventListener('click', handleSearchResultClick);
+        dom.filterHeader.addEventListener('click', handleFilterHeaderClick);
+        dom.filterOptions.addEventListener('change', updateFilteredData);
 
         // Close search results when clicking elsewhere
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-container')) {
                 dom.searchResults.style.display = 'none';
             }
-            // if (!e.target.closest('.filter-options')) {
-            //     dom.serviceFilters.style.display = 'none';
+            // if (!e.target.closest('.filter-container')) {
+            //     handleFilterHeaderClick();
             // }
         });
 
