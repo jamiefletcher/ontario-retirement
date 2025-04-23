@@ -141,6 +141,7 @@
         }
 
         #filter-header {
+            text-align: center;
             cursor: pointer;
         }
 
@@ -265,9 +266,10 @@
             `).join('');            
         }
 
-        function handleFilterHeaderClick() {
+        function handleFilterHeaderClick(e, forceClose = false) {
+            if (e && !forceClose) e.stopPropagation(); // This prevents the event from bubbling up to document
             const { filterHeader, filterOptions } = dom;
-            const isHidden = filterOptions.style.display === 'none';
+            const isHidden = forceClose ? false : filterOptions.style.display === 'none';
             filterOptions.style.display = isHidden ? 'flex' : 'none';
             filterHeader.querySelector('.toggle-icon').innerHTML = isHidden
                 ? '<i class="fas fa-caret-up"></i>'
@@ -435,17 +437,22 @@
         createServiceFilters();
         dom.searchInput.addEventListener('input', handleSearch);
         dom.searchResults.addEventListener('click', handleSearchResultClick);
-        dom.filterHeader.addEventListener('click', handleFilterHeaderClick);
+        dom.filterHeader.addEventListener('click', (e) => handleFilterHeaderClick(e));
         dom.filterOptions.addEventListener('change', updateFilteredData);
 
         // Close search results when clicking elsewhere
         document.addEventListener('click', (e) => {
+            const { filterHeader, filterOptions, searchResults } = dom;
+    
+            // Close search results if clicking outside
             if (!e.target.closest('.search-container')) {
-                dom.searchResults.style.display = 'none';
+                searchResults.style.display = 'none';
             }
-            // if (!e.target.closest('.filter-container')) {
-            //     handleFilterHeaderClick();
-            // }
+            
+            // Close filters if clicking outside
+            if (!e.target.closest('.filter-container') && filterOptions.style.display !== 'none') {
+                handleFilterHeaderClick(null, true); // Force close
+            }
         });
 
         map.on('load', () => {
