@@ -101,7 +101,7 @@
 			"filter": [ "in", "kind", "motorway", "trunk", "primary", "secondary", "tertiary" ],
 			"paint": {
 				"line-color": "hsl(224, 26%, 85%)",
-				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 1, 20, 152 ]
+				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 0, 20, 152 ]
 			},
 			"layout": {
 				"line-join": "round",
@@ -185,7 +185,7 @@
 			"filter": [ "all", [ "!=", "maritime", true ], [ "!=", "coastline", true ] ],
 			"paint": {
 				"line-color": "hsl(0, 20%, 90%)",
-				"line-width": 5,
+				"line-width": 2,
 				"line-opacity": 1
 			},
 			"layout": {
