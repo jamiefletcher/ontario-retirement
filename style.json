@@ -31,25 +31,27 @@
 		},
 		{
 			"source": "osm",
-			"id": "water-polygons",
+			"id": "land-natural",
+			"type": "fill",
+			"source-layer": "land",
+			"filter": [ "in", "kind", "brownfield", "farmland", "farmyard", "greenfield", "greenhouse_horticulture", "orchard", "plant_nursery", "vineyard", "park", "village_green", "recreation_ground", "allotments", "garden", "miniature_golf", "playground", "golf_course", "forest", "grass", "grassland", "meadow", "wet_meadow", "heath", "scrub", "beach", "sand", "bog", "marsh", "string_bog", "swamp" ],
+			"paint": {
+			  "fill-color": "hsl(110, 60%, 80%)",
+			  "fill-opacity": 1
+			},
+			"minzoom": 10
+		},
+		{
+			"source": "osm",
+			"id": "water-polygons-small",
 			"type": "fill",
 			"source-layer": "water_polygons",
 			"paint": {
 				"fill-color": "hsl(199, 78%, 80%)",
-				"fill-opacity": { "stops": [ [ 4, 0 ], [ 6, 1 ] ] }
-			}
+				"fill-opacity": { "stops": [ [ 8, 0 ], [ 9, 1 ] ] }
+			},
+			"minzoom": 8
 		},
-		{
-			"source": "osm",
-			"id": "land-park",
-			"type": "fill",
-			"source-layer": "land",
-			"filter": [ "in", "kind", "park", "village_green", "recreation_ground" ],
-				"paint": {
-				"fill-color": "hsl(110, 60%, 80%)",
-			  	"fill-opacity": 1
-			}
-		},  
 		{
 			"source": "osm",
 			"id": "building",
@@ -99,12 +101,13 @@
 			"filter": [ "in", "kind", "motorway", "trunk", "primary", "secondary", "tertiary" ],
 			"paint": {
 				"line-color": "hsl(224, 26%, 85%)",
-				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 0, 20, 152 ]
+				"line-width": [ "interpolate", [ "exponential", 2 ], [ "zoom" ], 10, 1, 20, 152 ]
 			},
 			"layout": {
 				"line-join": "round",
 				"line-cap": "round"
-			}
+			},
+			"minzoom": 7
 		},
 		{
 			"source": "osm",
@@ -126,6 +129,8 @@
 
 				"icon-color": "hsl(0, 0%, 20%)",
 				"text-color": "hsl(0, 0%, 20%)",
+				"text-halo-color": "hsla(0, 0%, 100%, 0.5)",
+				"text-halo-width": 2,
 				"icon-opacity": [ "interpolate", [ "linear" ], [ "zoom" ], 14, 0, 15, 1 ],
 				"text-opacity": [ "interpolate", [ "linear" ], [ "zoom" ], 14, 0, 15, 1 ]
 			}
@@ -139,15 +144,16 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-transform": "uppercase",
-				"text-font": [ "montserrat-semibold" ],
-				"text-letter-spacing": 0.2,
+				"text-font": [ "montserrat-regular" ],
+				"text-letter-spacing": 0.1,
 				"symbol-placement": "line",
-				"symbol-spacing": [ "interpolate", [ "linear" ], [ "zoom" ], 12, 200, 20, 400 ],
 				"text-anchor": "center",
-				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 0, 20, 20 ]
+				"text-size": [ "interpolate", [ "exponential", 1.5 ], [ "zoom" ], 10, 5, 20, 20 ]
 			},
 			"paint": {
-				"text-color": "hsl(0, 0%, 20%)"
+				"text-color": "hsl(0, 0%, 20%)",
+				"text-halo-color": "hsla(0, 0%, 100%, 0.5)",
+				"text-halo-width": 2
 			}
 		},
 		{
@@ -159,7 +165,7 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-transform": "uppercase",
-				"text-font": [ "montserrat-semibold" ],
+				"text-font": [ "montserrat-regular" ],
 				"text-letter-spacing": 0.3,
 				"symbol-placement": "line",
 				"text-anchor": "center",
@@ -173,6 +179,22 @@
 		},
 		{
 			"source": "osm",
+			"id": "boundary",
+			"type": "line",
+			"source-layer": "boundaries",
+			"filter": [ "all", [ "!=", "maritime", true ], [ "!=", "coastline", true ] ],
+			"paint": {
+				"line-color": "hsl(0, 20%, 90%)",
+				"line-width": 5,
+				"line-opacity": 1
+			},
+			"layout": {
+				"line-cap": "butt",
+				"line-join": "bevel"
+			}
+		},
+		{
+			"source": "osm",
 			"id": "label-neighbourhood",
 			"type": "symbol",
 			"source-layer": "place_labels",
@@ -180,6 +202,7 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-font": [ "montserrat-regular" ],
+				"text-letter-spacing": 0.1,
 				"text-size": 10,
 				"text-transform": "uppercase"
 			},
@@ -187,9 +210,7 @@
 				"text-color": "hsl(0, 0%, 20%)",
 				"text-halo-color": "hsla(0, 0%, 100%, 0.5)",
 				"text-halo-width": 2
-			},
-			"minzoom": 10,
-			"maxzoom": 16
+			}
 		},
 		{
 			"source": "osm",
@@ -200,7 +221,7 @@
 			"layout": {
 				"text-field": "{name}",
 				"text-transform": "uppercase",
-				"text-font": [ "montserrat-semibold" ],
+				"text-font": [ "montserrat-regular" ],
 				"text-letter-spacing": 0.1,
 				"text-size": 10
 			},
@@ -208,8 +229,7 @@
 				"text-color": "hsl(0, 0%, 20%)",
 				"text-halo-color": "hsla(0, 0%, 100%, 0.5)",
 				"text-halo-width": 2
-			},
-			"maxzoom": 10
+			}
 		}
 	]
 }
