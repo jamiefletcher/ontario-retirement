@@ -235,7 +235,39 @@
     <script>
         // Configuration
         const CONFIG = {
-            pointsFile: 'data/homes.geojson',
+            points: {
+                file: 'data/homes.geojson',
+                layers: [
+                    {
+                        beforeId: 'label-city',
+                        data: { 
+                            id: 'points',
+                            type: 'circle',
+                            source: 'points',
+                            paint: {
+                                'circle-color': 'hsl(26, 100%, 57%)',
+                                'circle-radius': ["interpolate", ["linear"], ["zoom"], 5, 3, 20, 10],
+                                'circle-stroke-width': ["interpolate", ["linear"], ["zoom"], 5, 1, 20, 2],
+                                'circle-stroke-color': 'hsl(0, 0%, 100%)'
+                            }
+                        }
+                    },
+                    {
+                        beforeId: 'points',
+                        data: {
+                            id: 'points-blast-radius',
+                            type: 'circle',
+                            source: 'points',
+                            paint: {
+                                'circle-radius': 50,
+                                'circle-color': 'hsl(26, 100%, 57%)',
+                                'circle-opacity': 0.2,
+                            },
+                            minzoom: 13
+                        }
+                    }
+                ]
+            },
             styleFile: 'style.json',
             services: [
                 "Bathing", "Hygiene", "Walking", "Feeding",
@@ -472,7 +504,7 @@
         });
 
         map.on('load', () => {
-            fetch(CONFIG.pointsFile)
+            fetch(CONFIG.points.file)
                 .then(response => response.json())
                 .then(data => {
                     allFeatures = data.features;
@@ -483,29 +515,9 @@
                         cluster: false
                     });
 
-                    map.addLayer({
-                        id: 'points-blast-radius',
-                        type: 'circle',
-                        source: 'points',
-                        paint: {
-                            'circle-radius': 50,
-                            'circle-color': 'hsl(26, 100%, 57%)',
-                            'circle-opacity': 0.2,
-                        },
-                        minzoom: 13
+                    CONFIG.points.layers.forEach(layer => {
+                        map.addLayer(layer.data, layer.beforeId);
                     });
-
-                    map.addLayer({
-                        id: 'points',
-                        type: 'circle',
-                        source: 'points',
-                        paint: {
-                            'circle-color': 'hsl(26, 100%, 57%)',
-                            'circle-radius': ["interpolate", ["linear"], ["zoom"], 5, 3, 20, 10],
-                            'circle-stroke-width': ["interpolate", ["linear"], ["zoom"], 5, 1, 20, 2],
-                            'circle-stroke-color': 'hsl(0, 0%, 100%)'
-                        }
-                    }, 'label-city');
 
                     map.addSource("ontario-lakes", {
                         type: "vector",
