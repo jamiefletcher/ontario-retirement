@@ -268,6 +268,31 @@
                     }
                 ]
             },
+            lakes: {
+                source: {
+                    id: 'ontario-lakes',
+                    type: 'vector',
+                    tiles: ['https://jamiefletcher.github.io/ontario-retirement/ontario-lakes/{z}/{x}/{y}.pbf'],
+                    tileSize: 512
+                },
+                layers: [
+                    {
+                        id: 'lakes',
+                        beforeId: 'points',
+                        data: {
+                            type: 'fill',
+                            source: 'ontario-lakes',
+                            'source-layer': 'ontario-lakes',
+                            paint: {
+                                'fill-color': 'hsl(199, 78%, 80%)',
+                                'fill-opacity': 1
+                            },
+                            minzoom: 5,
+                            maxzoom: 8
+                        }
+                    }
+                ]
+            },
             styleFile: 'style.json',
             services: [
                 "Bathing", "Hygiene", "Walking", "Feeding",
@@ -519,24 +544,11 @@
                         map.addLayer(layer.data, layer.beforeId);
                     });
 
-                    map.addSource("ontario-lakes", {
-                        type: "vector",
-                        tiles: ["https://jamiefletcher.github.io/ontario-retirement/ontario-lakes/{z}/{x}/{y}.pbf"],
-                        tileSize: 512
+                    map.addSource(CONFIG.lakes.source.id, CONFIG.lakes.source);
+                    
+                    CONFIG.lakes.layers.forEach(layer => {
+                        map.addLayer({ ...layer.data, id: layer.id }, layer.beforeId);
                     });
-
-                    map.addLayer({
-                        id: 'lakes',
-                        type: 'fill',
-                        source: 'ontario-lakes',
-                        'source-layer': 'ontario-lakes',
-                        paint: {
-                            'fill-color': 'hsl(199, 78%, 80%)',
-                            'fill-opacity': 1
-                        },
-                        minzoom: 5,
-                        maxzoom: 8
-                    }, 'points');
 
                     map.on('click', 'points', (e) => {
                         const feature = e.features[0];
@@ -608,21 +620,24 @@
         }
 
         // Toggle animation on button click
-        document.getElementById('actionOverlay').addEventListener('click', () => {
-            if (intervalId) {
-                // Stop animation
-                clearInterval(intervalId);
-                intervalId = null;
-                selectedActionIndex = null; // Reset action
-                frameCounter = 1;
-                console.log("Animation stopped");
-            } else {
-                // Start animation (pick a random action ONCE)
-                selectedActionIndex = Math.floor(Math.random() * 3); // 0=rotate, 1=zoom, 2=pan
-                intervalId = setInterval(animateFrame, frameInterval);
-                console.log(`Animation started with action: ${selectedActionIndex}`);
-            }
-        });
+        const actionOverlay = document.getElementById('actionOverlay');
+        if (actionOverlay) {
+            actionOverlay.addEventListener('click', () => {
+                if (intervalId) {
+                    // Stop animation
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    selectedActionIndex = null; // Reset action
+                    frameCounter = 1;
+                    console.log("Animation stopped");
+                } else {
+                    // Start animation (pick a random action ONCE)
+                    selectedActionIndex = Math.floor(Math.random() * 3); // 0=rotate, 1=zoom, 2=pan
+                    intervalId = setInterval(animateFrame, frameInterval);
+                    console.log(`Animation started with action: ${selectedActionIndex}`);
+                }
+            });
+        }
 
         map.on('click', (e) => {
             const features = map.queryRenderedFeatures(e.point);
