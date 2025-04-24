@@ -10,211 +10,7 @@
         rel="stylesheet">
     <link href="https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@5.1.0/dist/maplibre-gl.js"></script>
-    <style>
-        * {
-            color: hsl(0, 0%, 20%);
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        a {
-            color: hsl(200, 50%, 40%);
-            text-decoration: none !important;
-            border: none;
-            outline: none;
-        }
-
-        h2 {
-            padding: 0;
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.2rem;
-        }
-
-        .ellipsis {
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 175px;
-        }
-
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* Popup Styling */
-        .popup-container {
-            max-width: 300px;
-        }
-
-        .maplibregl-popup-content {
-            padding: 10px;
-            margin: 0px;
-        }
-
-        .contact-info {
-            margin: 5px 0;
-        }
-
-        .contact-info div {
-            display: flex;
-            align-items: center;
-            gap: 5px; /* space between icon and text */
-        }
-
-        .contact-info i {
-            font-size: 12px;
-            width: 1.25em;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .capacity {
-            margin: 5px 0;
-            padding: 5px;
-            background-color: hsl(0, 0%, 97%);
-            border-radius: 5px;
-        }
-
-        .services-grid {
-            padding: 5px;
-            background-color: hsl(0, 0%, 97%);
-            border-radius: 5px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3px;
-        }
-
-        .service-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .service-item i {
-            font-size: 12px;
-        }
-
-        /* Search-Filter Styling */
-        .search-filter-ui {
-            position: absolute;
-            display: flex;
-            flex-direction: row;
-            top: 10px;
-            left: 50%;
-            gap: 5px;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
-
-        .search-container {
-            width: 360px;
-            background: white;
-            border-radius: 5px;
-            height: min-content;
-            box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
-        }
-
-        .filter-container {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
-            width: 130px;
-            height: min-content;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        #service-filters {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #filter-header {
-            text-align: center;
-            cursor: pointer;
-        }
-
-        #filter-options {
-            display: none; /* Start hidden */
-            flex-direction: column;
-        }
-
-        .filter-option {
-            display: flex;
-            align-items: flex-end;
-            margin-top: 10px;
-        }
-
-        .filter-option label {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .filter-option input[type="checkbox"] {
-            margin: 0 8px 0 0;
-        }
-
-        .toggle-icon {
-            font-weight: normal;
-            margin-left: 5px;
-        }
-
-        #search-input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        #search-results {
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-            border-top: 1px solid #eee;
-        }
-
-        .search-result {
-            padding: 8px 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-
-        .search-result:hover {
-            background-color: #f5f5f5;
-        }
-
-        .search-result:last-child {
-            border-bottom: none;
-        }
-
-        #actionOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 999;
-            background: hsla(20, 80%, 50%, 0.5);
-            cursor: pointer;
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            margin: 20px;
-        }
-    </style>
+    <link href="css/styles.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -240,7 +36,7 @@
                 layers: [
                     {
                         beforeId: 'label-city',
-                        data: { 
+                        data: {
                             id: 'points',
                             type: 'circle',
                             source: 'points',
@@ -545,7 +341,7 @@
                     });
 
                     map.addSource(CONFIG.lakes.source.id, CONFIG.lakes.source);
-                    
+
                     CONFIG.lakes.layers.forEach(layer => {
                         map.addLayer({ ...layer.data, id: layer.id }, layer.beforeId);
                     });
