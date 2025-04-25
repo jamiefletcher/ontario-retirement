@@ -106,7 +106,7 @@ h2 {
 }
 
 .search-container {
-    width: 360px;
+    width: 30vw;
     background: white;
     border-radius: 5px;
     height: min-content;
@@ -118,16 +118,17 @@ h2 {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
-    width: 130px;
+    width: 140px;
     height: min-content;
     max-height: 80vh;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
-#service-filters {
+/* #service-filters {
     display: flex;
     flex-direction: column;
-}
+} */
 
 #filter-header {
     text-align: center;
@@ -137,6 +138,7 @@ h2 {
 #filter-options {
     display: none; /* Start hidden */
     flex-direction: column;
+    width: 120px;
 }
 
 .filter-option {
