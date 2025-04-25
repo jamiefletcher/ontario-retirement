@@ -125,11 +125,6 @@ h2 {
     overflow-x: hidden;
 }
 
-/* #service-filters {
-    display: flex;
-    flex-direction: column;
-} */
-
 #filter-header {
     text-align: center;
     cursor: pointer;

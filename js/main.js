@@ -43,7 +43,7 @@ const CONFIG = {
         layers: [
             {
                 id: 'lakes',
-                beforeId: 'points',
+                beforeId: null,
                 data: {
                     type: 'fill',
                     source: 'ontario-lakes',
@@ -63,6 +63,11 @@ const CONFIG = {
         "Bathing", "Hygiene", "Walking", "Feeding",
         "Wounds", "Continence", "Drugs", "Meals",
         "Dementia", "Dressing", "Pharmacist", "Doctor", "Nurse"
+    ],
+    markers: [
+        'img/head_1.png', 'img/head_2.png', 'img/head_3.png', 'img/head_4.png',
+        'img/head_5.png', 'img/head_6.png', 'img/head_7.png', 'img/head_8.png',
+        'img/head_9.png'
     ],
     mapOptions: {
         container: 'map',
@@ -280,7 +285,7 @@ dom.filterOptions.addEventListener('change', updateFilteredData);
 
 // Close search results when clicking elsewhere
 document.addEventListener('click', (e) => {
-    const { filterHeader, filterOptions, searchResults } = dom;
+    const { filterOptions, searchResults } = dom;
 
     // Close search results if clicking outside
     if (!e.target.closest('.search-container')) {
@@ -298,6 +303,11 @@ map.on('load', () => {
         .then(response => response.json())
         .then(data => {
             allFeatures = data.features;
+
+            // Add a random marker image index property to each feature
+            allFeatures.forEach(feature => {
+                feature.properties.markerId = Math.floor(Math.random() * 9); // 0-8
+            });
 
             map.addSource('points', {
                 type: 'geojson',
