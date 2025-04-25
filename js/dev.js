@@ -1,11 +1,12 @@
-const zoomIncrement = -0.002;
+const zoomIncrement = 0.005;
 const rotateIncrement = 0.2;
 const latIncrement = 0.000005;
 const frameInterval = 1000;
 let frameCounter = 1;
 let isAnimating = false;
 let intervalId = null;
-let selectedActionIndex = null; // Stores the randomly chosen action (0, 1, or 2)
+//let selectedActionIndex = null; // Stores the randomly chosen action (0, 1, or 2)
+let selectedActionIndex = 1; // zoom
 
 // Define the action to perform (based on selectedActionIndex)
 function performAction() {
@@ -56,17 +57,15 @@ const actionOverlay = document.getElementById('actionOverlay');
 if (actionOverlay) {
     actionOverlay.addEventListener('click', () => {
         if (intervalId) {
-            // Stop animation
+            // Stop animation (but keep selectedActionIndex = 1)
             clearInterval(intervalId);
             intervalId = null;
-            selectedActionIndex = null; // Reset action
             frameCounter = 1;
             console.log("Animation stopped");
         } else {
-            // Start animation (pick a random action ONCE)
-            selectedActionIndex = Math.floor(Math.random() * 3); // 0=rotate, 1=zoom, 2=pan
+            // Start zoom animation (ignore randomization)
             intervalId = setInterval(animateFrame, frameInterval);
-            console.log(`Animation started with action: ${selectedActionIndex}`);
+            console.log("Animation started with ZOOM (action 1)");
         }
     });
 }
