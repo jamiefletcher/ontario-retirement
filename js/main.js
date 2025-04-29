@@ -319,12 +319,6 @@ map.on('load', () => {
                 map.addLayer(layer.data, layer.beforeId);
             });
 
-            map.addSource(CONFIG.lakes.source.id, CONFIG.lakes.source);
-
-            CONFIG.lakes.layers.forEach(layer => {
-                map.addLayer({ ...layer.data, id: layer.id }, layer.beforeId);
-            });
-
             map.on('click', 'points', (e) => {
                 const feature = e.features[0];
                 createPopup(feature);
@@ -337,4 +331,9 @@ map.on('load', () => {
                 map.getCanvas().style.cursor = '';
             });
         });
+
+    map.addSource(CONFIG.lakes.source.id, CONFIG.lakes.source);
+    CONFIG.lakes.layers.forEach(layer => {
+        map.addLayer({ ...layer.data, id: layer.id }, layer.beforeId);
+    });
 });
