@@ -6,6 +6,31 @@ const CONFIG = {
             {
                 beforeId: 'label-city',
                 data: {
+                    id: 'points-icons',
+                    type: 'symbol',
+                    source: 'points',
+                    layout: {
+                        'text-field': ['get', 'name'],
+                        'text-font': ['montserrat-regular'],
+                        'text-size': 12,
+                        'text-offset': [0, 3.5],
+                        'text-anchor': 'top',
+                        'text-allow-overlap': true,
+                        'icon-image': 'custom-marker',
+                        'icon-size': 0.25,
+                        'icon-allow-overlap': true
+                    },
+                    paint: {
+                        'text-color': '#000000',
+                        'text-halo-color': '#ffffff',
+                        'text-halo-width': 2
+                    },
+                    minzoom: 14
+                }
+            },
+            {
+                beforeId: 'points-icons',
+                data: {
                     id: 'points',
                     type: 'circle',
                     source: 'points',
@@ -14,7 +39,8 @@ const CONFIG = {
                         'circle-radius': ["interpolate", ["linear"], ["zoom"], 5, 3, 20, 10],
                         'circle-stroke-width': ["interpolate", ["linear"], ["zoom"], 5, 1, 20, 2],
                         'circle-stroke-color': 'hsl(0, 0%, 100%)'
-                    }
+                    },
+                    maxzoom: 14
                 }
             },
             {
@@ -298,10 +324,10 @@ document.addEventListener('click', (e) => {
     }
 });
 
-map.on('load', () => {
+map.on('load', () => {    
     fetch(CONFIG.points.file)
         .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             allFeatures = data.features;
 
             // Add a random marker image index property to each feature
@@ -314,6 +340,10 @@ map.on('load', () => {
                 data: data,
                 cluster: false
             });
+
+            const markerUrl = 'img/head_1.png';
+            const response = await map.loadImage(markerUrl);
+            map.addImage('custom-marker', response.data);
 
             CONFIG.points.layers.forEach(layer => {
                 map.addLayer(layer.data, layer.beforeId);
