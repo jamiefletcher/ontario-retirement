@@ -16,7 +16,7 @@ const CONFIG = {
                         'text-offset': [0, 3.5],
                         'text-anchor': 'top',
                         'text-allow-overlap': true,
-                        'icon-image': 'custom-marker',
+                        'icon-image': ['get', 'marker'],
                         'icon-size': 0.25,
                         'icon-allow-overlap': true
                     },
@@ -25,7 +25,7 @@ const CONFIG = {
                         'text-halo-color': '#ffffff',
                         'text-halo-width': 2
                     },
-                    minzoom: 14
+                    minzoom: 13
                 }
             },
             {
@@ -40,7 +40,7 @@ const CONFIG = {
                         'circle-stroke-width': ["interpolate", ["linear"], ["zoom"], 5, 1, 20, 2],
                         'circle-stroke-color': 'hsl(0, 0%, 100%)'
                     },
-                    maxzoom: 14
+                    maxzoom: 13
                 }
             },
             {
@@ -50,9 +50,9 @@ const CONFIG = {
                     type: 'circle',
                     source: 'points',
                     paint: {
-                        'circle-radius': 50,
+                        'circle-radius': 40,
                         'circle-color': 'hsl(26, 100%, 57%)',
-                        'circle-opacity': 0.2,
+                        'circle-opacity': 0.4,
                     },
                     minzoom: 13
                 }
@@ -68,9 +68,9 @@ const CONFIG = {
         },
         layers: [
             {
-                id: 'lakes',
                 beforeId: null,
                 data: {
+                    id: 'lakes',
                     type: 'fill',
                     source: 'ontario-lakes',
                     'source-layer': 'ontario-lakes',
@@ -95,6 +95,7 @@ const CONFIG = {
         'img/head_5.png', 'img/head_6.png', 'img/head_7.png', 'img/head_8.png',
         'img/head_9.png'
     ],
+    interactiveLayers: ['points', 'points-icons'],
     mapOptions: {
         container: 'map',
         style: 'style.json',
@@ -324,46 +325,55 @@ document.addEventListener('click', (e) => {
     }
 });
 
-map.on('load', () => {    
-    fetch(CONFIG.points.file)
-        .then(response => response.json())
-        .then(async data => {
-            allFeatures = data.features;
+map.on('load', async () => {
+    // Load points data
+    const pointsResponse = await fetch(CONFIG.points.file);
+    const pointsData = await pointsResponse.json();
+    allFeatures = pointsData.features;
 
-            // Add a random marker image index property to each feature
-            allFeatures.forEach(feature => {
-                feature.properties.markerId = Math.floor(Math.random() * 9); // 0-8
-            });
+    // Assign random markers
+    allFeatures.forEach(feature => {
+        const num = Math.floor(Math.random() * CONFIG.markers.length);
+        feature.properties.marker = CONFIG.markers[num];
+    });
 
-            map.addSource('points', {
-                type: 'geojson',
-                data: data,
-                cluster: false
-            });
+    // Add points source
+    map.addSource('points', {
+        type: 'geojson',
+        data: pointsData,
+        cluster: false
+    });
 
-            const markerUrl = 'img/head_1.png';
-            const response = await map.loadImage(markerUrl);
-            map.addImage('custom-marker', response.data);
+    // Load point marker images in parallel
+    await Promise.all(CONFIG.markers.map(async marker => {
+        const response = await map.loadImage(marker);
+        map.addImage(marker, response.data);
+    }));
 
-            CONFIG.points.layers.forEach(layer => {
-                map.addLayer(layer.data, layer.beforeId);
-            });
+    // Add point layers
+    CONFIG.points.layers.forEach(layer => {
+        map.addLayer(layer.data, layer.beforeId);
+    });
 
-            map.on('click', 'points', (e) => {
-                const feature = e.features[0];
-                createPopup(feature);
-            });
-
-            map.on('mouseenter', 'points', () => {
-                map.getCanvas().style.cursor = 'pointer';
-            });
-            map.on('mouseleave', 'points', () => {
-                map.getCanvas().style.cursor = '';
-            });
-        });
-
+    // Add simplified lakes layers
     map.addSource(CONFIG.lakes.source.id, CONFIG.lakes.source);
     CONFIG.lakes.layers.forEach(layer => {
-        map.addLayer({ ...layer.data, id: layer.id }, layer.beforeId);
+        map.addLayer(layer.data, layer.beforeId);
+    });
+
+    // Add pop-up and mouseover handlers
+    CONFIG.interactiveLayers.forEach(layerName => {
+        map.on('click', layerName, (e) => {
+            const feature = e.features[0];
+            createPopup(feature);
+        });
+        
+        map.on('mouseenter', layerName, () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        map.on('mouseleave', layerName, () => {
+            map.getCanvas().style.cursor = '';
+        });
     });
 });
