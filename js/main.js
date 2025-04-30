@@ -10,22 +10,33 @@ const CONFIG = {
                     type: 'symbol',
                     source: 'points',
                     layout: {
+                        'icon-image': ['get', 'marker'],
+                        'icon-size': 0.25,
+                        'icon-allow-overlap': true
+                    },
+                    minzoom: 13
+                }
+            },
+            {
+                beforeId: 'points-icons',
+                data: {
+                    id: 'points-labels',
+                    type: 'symbol',
+                    source: 'points',
+                    layout: {
                         'text-field': ['get', 'name'],
                         'text-font': ['montserrat-regular'],
                         'text-size': 12,
                         'text-offset': [0, 3.5],
                         'text-anchor': 'top',
-                        'text-allow-overlap': true,
-                        'icon-image': ['get', 'marker'],
-                        'icon-size': 0.25,
-                        'icon-allow-overlap': true
+                        'text-allow-overlap': false
                     },
                     paint: {
                         'text-color': '#000000',
                         'text-halo-color': '#ffffff',
                         'text-halo-width': 2
                     },
-                    minzoom: 13
+                    minzoom: 14
                 }
             },
             {
