@@ -147,7 +147,7 @@ function handleFilterHeaderClick(e, forceClose = false) {
 }
 
 function updateFilteredData() {
-    const checkboxes = document.querySelectorAll('#service-filters input[type="checkbox"]:checked');
+    const checkboxes = document.querySelectorAll('#filter-options input[type="checkbox"]:checked');
     const activeFilters = Array.from(checkboxes).map(cb => cb.value);
 
     const filteredFeatures = activeFilters.length === 0
