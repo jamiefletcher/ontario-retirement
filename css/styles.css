@@ -103,37 +103,50 @@ h2 {
     gap: 5px;
     transform: translateX(-50%);
     z-index: 1000;
+    align-items: flex-start;
 }
 
 .search-container {
-    width: 300px;
+    width: 280px;
     background: white;
     border-radius: 5px;
     height: min-content;
     box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
+    z-index: 0;
 }
 
 .filter-container {
+    position: relative;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
+    width: min-content;
+    height: min-content;
+    z-index: 1;
+}
+
+#filter-header {
+    width: 50px;
+    text-align: center;
+    cursor: pointer;
+    margin: 0;
+    padding: 10px;
+}
+
+#filter-options {
+    position: absolute;
+    top: 100%; /* Position below filter-header */
+    left: auto;
+    right: 0;
+    margin-top: 10px;
+    width: 140px;
+    flex-direction: column; 
     background: white;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 1px 2px hsla(0, 0%, 0%, .1);
-    width: 140px;
-    height: min-content;
-    max-height: 80vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-#filter-header {
-    text-align: center;
-    cursor: pointer;
-}
-
-#filter-options {
     display: none; /* Start hidden */
-    flex-direction: column;
-    width: 120px;
+    z-index: 1;
 }
 
 .filter-option {
@@ -149,11 +162,6 @@ h2 {
 
 .filter-option input[type="checkbox"] {
     margin: 0 8px 0 0;
-}
-
-.toggle-icon {
-    font-weight: normal;
-    margin-left: 5px;
 }
 
 #search-input {
@@ -199,8 +207,8 @@ h2 {
     margin: 20px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .search-filter-ui {
         flex-direction: column;
     }
-}
+} */
